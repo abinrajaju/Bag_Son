@@ -1,0 +1,120 @@
+<%- include('includes/header') -%>
+
+<!-- navbar -->
+<%- include('includes/navbr') -%>
+
+<div class="container-fluid ms-md-4 mt-4">
+    <div class="row">
+        <div class="col-md-3 account-nav rounded shadow">
+            <div class="row">
+            <div class="col-4"><label for="name"><%= user.name %></label></div>
+            <div class="col-8"><a class="nav-link" href="/cart">
+                <i class="fa-solid fa-wallet me-1"></i>Wallet Amount : <%= user.walletAmount%></a></div>
+            </div>
+            <hr>
+            <ul class="list-unstyled">
+                <li>
+                    <a href="/useraccount" class="text-decoration-none text-white bg-primary d-block py-2 rounded">Profile</a>
+                </li>
+                <li>
+                    <a href="/useraddress" class="text-decoration-none text-dark">Addresses</a>
+                </li>
+                <li>
+                    <a href="/userorders" class="text-decoration-none text-dark">My Orders</a>
+                </li>
+                <li>
+                    <a href="/wishlisted" class="text-decoration-none text-dark">My Wishlist</a>
+                </li>
+                <li>
+                    <a href="/wallethistory" class="text-decoration-none text-dark">Wallet History</a>
+                </li>
+                <li>
+                    <a href="/forgot" class="text-decoration-none text-dark">Forgot Password</a>
+                </li>
+                <hr>
+                <li>
+                    <a href="/userlogout" class="text-decoration-none text-danger">Logout</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-9 account-content">
+            <div id="profile" class="rounded bg-white p-md-5 p-2">
+                <h2>Profile</h2>
+                <form action="/update-user/<%= user.id %>" method="post" class=" p-md-5 sm:p-10" id="profileForm">
+                    <div class="row">
+                        <label class="col-9"><b>Personal Information </b><a href="#" class="ms-5 edit-link" onclick="enableEdit()">Edit</a></label>
+                    </div>
+                    <div class="flex flex-col gap-4 items-start">
+                        <div class="row justify-between items-center mb-3">
+                            <input type="hidden" id="user_id" name="id" value="<%= user.id %>">
+                            <label for="name" class="col-6 col-form-label me-5">Username:</label><br>
+                            <div class="col-md-6 col-sm-12 me-5">
+                                <input type="text" class="form-control mb-3" id="username" name="name" value="<%= user.name %>" required disabled />
+                                </div>
+                            <label class="col-6 col-form-label me-5">Gender:</label><br>
+                            <div class="col-6 me-5" id="radioInput">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="gender" value="Male" <% if(user.gender == "Male") { %> checked <% } %> required disabled />
+                                    <label class="form-check-label">Male</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="gender" value="Female" <% if(user.gender == "Female") { %> checked <% } %> required disabled />
+                                    <label class="form-check-label">Female</label>
+                                </div>
+                            </div>
+                            <label for="email" class="col-6 me-5 col-form-label">Email:</label><br>
+                            <div class="col-md-6  col-sm-12 me-5">
+                                <input type="email" class="form-control" id="email" name="email" value="<%= user.email || user.googleId%>" required disabled />
+                            </div>
+                        </div>
+                        <div class="row" id="editButtons" style="display: none;">
+                            <div class="col-6">
+                                <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 mb-4">Update</button>
+                                <a class="btn btn-primary border rounded-pill px-4 py-2 mb-4" href="#" onclick="cancelEdit()">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function enableEdit() {
+        document.querySelectorAll('#profileForm input:not([name="email"])').forEach(function(input) {
+            input.disabled = false;
+        });
+        document.getElementById('editButtons').style.display = 'block';
+    }
+
+    function cancelEdit() {
+        document.querySelectorAll('#profileForm input:not([name="email"])').forEach(function(input) {
+            input.disabled = true;
+        });
+        document.getElementById('editButtons').style.display = 'none';
+    }
+</script>
+
+
+<!-- 
+<script>
+    function previewAvatar(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#avatarPreview')
+                    .attr('src', e.target.result)
+                    .width(56)
+                    .height(56);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script> -->
+
+<%- include('includes/userFooter') -%>
+
+<%- include('includes/footer') -%>

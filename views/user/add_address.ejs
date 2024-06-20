@@ -1,0 +1,143 @@
+<%- include('includes/header') -%>
+
+<!-- navbar -->
+<%- include('includes/navbr') -%>
+
+<div class="container-fluid ms-md-4 mt-4">
+    <div class="row">
+        <div class="col-md-3 col-sm-6 account-nav rounded shadow">
+            <div class="row">
+                <div class="col-4"><label for="name"><%= user.name %></label></div>
+                <div class="col-8"><a class="nav-link" href="/cart">
+                    <i class="fa-solid fa-wallet me-1"></i>Wallet Amount : <%= user.walletAmount%></a></div>
+                </div>
+            <hr>
+            <ul class="list-unstyled">
+                <li>
+                    <a href="/useraccount" class="text-decoration-none text-dark">Profile</a>
+                </li>
+                <li>
+                    <a href="/useraddress" class="text-decoration-none text-white bg-primary d-block py-2 rounded">Addresses</a>
+                </li>
+                <li>
+                    <a href="/userorders" class="text-decoration-none text-dark">My Orders</a>
+                </li>
+                <li>
+                    <a href="/wishlisted" class="text-decoration-none text-dark">My Wishlist</a>
+                </li>
+                <li>
+                    <a href="/wallethistory" class="text-decoration-none text-dark">Wallet History</a>
+                </li>
+                <li>
+                    <a href="/forgot-otp" class="text-decoration-none text-dark">Forgot Password</a>
+                </li>
+                <hr>
+                <li>
+                    <a href="/userlogout" class="text-decoration-none text-danger">Logout</a>
+                </li>
+            </ul>
+            
+        </div>
+        <div class="col-md-9 account-content">
+            <div class="container rounded p-4" style="background-color: rgb(235, 249, 249);">
+                <h2 class="mb-4">ADD A NEW ADDRESS</h2>
+                <form action="/addaddress" method="post" onsubmit="return validateForm()">
+                    <input type="hidden" id="user_id" name="id" value="<%= user.id %>">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Name</label>
+                            <div class="form-floating mb-3">
+                                
+                              <input type="text" class="form-control " name="name" id="name" placeholder="Name" required>
+                              
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="number" class="form-label">10-digit mobile number</label>
+                            <div class="form-floating mb-3">
+                              <input type="text" class="form-control border-0 border-bottom rounded-0" name="number" id="mob" placeholder="Mobile Number" >
+                              
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="pincode" class="form-label">Pincode</label>
+                            <div class="form-floating mb-3">
+                              <input type="number" class="form-control border-0 border-bottom rounded-0" name="pincode" id="pin" placeholder="Pincode" >
+                             
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="locality" class="form-label">Locality</label>
+                            <div class="form-floating mb-3">
+                              <input type="text" class="form-control border-0 border-bottom rounded-0" name="locality" id="locality" placeholder="Locality" >
+                              
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="address" class="form-label">Address (Area and Street):</label>
+                            <div class="form-floating mb-3">
+                                <textarea class="form-control" id="address" name="address" ></textarea>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="district" class="form-label">City/District/Town</label>
+                            <div class="form-floating mb-3">
+                              <input type="text" class="form-control border-0 border-bottom rounded-0" name="district" id="district" placeholder="District" >
+                             
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="district" class="form-label">select state</label>
+                            <div class="form-floating mb-3">
+                                <select class="form-select border-0 border-bottom rounded-0" name="state" id="state" >
+                                    <option value="" disabled selected>Select State</option>
+                                    <option value="Kerala">Kerala</option>
+                                    <option value="Tamilnadu">Tamilnadu</option>
+                                    <option value="Karnataka">Karnataka</option>
+                                    <!-- Add more options as needed -->
+                                </select>
+                               
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="landmark" class="form-label">Landmark(Optional)</label>
+                            <div class="form-floating mb-3">
+                              <input type="text" class="form-control border-0 border-bottom rounded-0" name="landmark" id="landmark" placeholder="Landmark">
+                             
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Alternate Phone (Optional)</label>
+                            <div class="form-floating mb-3">
+                              <input type="text" class="form-control border-0 border-bottom rounded-0" name="phone" id="phone" placeholder="Alternate Phone">
+                              
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group d-inline-flex">
+                             <label for="type" class="text-dark">Address Type :</label>
+                             <div class="radio ms-2">
+                                <input type="radio" id="radio2" name="addressType" value="home" required>
+                              <label for="type" class="text-dark">Home</label>
+                             </div>
+                             <div class="radio ms-2">
+                                <input type="radio" id="radio3" name="addressType" value="work" required>
+                              <label for="type" class="text-dark">Work</label>
+                             </div>
+                            </div>
+                          </div><br><br>
+                    <div class="col-md-3 col-sm-6"><button type="submit" class="btn btn-primary w-75 mt-2">SAVE</button></div>
+                    <div class="col-md-3 col-sm-6"><a href="/useraddress" class="btn btn-secondary ms-md-2 mt-2  w-75">CANCEL</a></div>
+                    
+                    
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('includes/userFooter') -%>
+
+<%- include('includes/footer') -%>

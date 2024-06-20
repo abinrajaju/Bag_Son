@@ -1,0 +1,42 @@
+<%-include('includes/log_header')-%>
+<!-- Include Font Awesome from a CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<section class="sign-in">
+    <div class="container">
+        <div class="signin-content">
+            <div class="signin-image">
+                <figure><img src="/assets/img/signin.jpg" alt="sign up image"></figure>
+                <a href="/usersignup" class="signup-image-link">Create an account</a>
+            </div>
+           
+            <div class="signin-form">
+                <h2 class="form-title">Login in</h2>
+                <form method="POST" class="register-form" action="/userlogin" id="login-form">
+                    <div class="form-group">
+                        <label for="your_email"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                        <input type="email" name="email" id="your_email" placeholder="Your Email" value="alameen@gmail.com" />
+                        <div class="error-message" id="email-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
+                        <input type="password" name="password" id="your_pass" placeholder="Password" value="ameen123" />
+                        <div class="error-message" id="password-error"></div>
+                        <%=message%>
+                    </div>
+                    
+                    <p><a href="/forgot"  class="text-decoration-none text-black">forgot password</a></p>
+                    <div class="form-group form-button">
+                        <input type="submit" name="signin" id="signin" class="form-submit" value="Log in"/>
+                    </div>
+                </form>
+                <div class="social-login">
+                    <span class="social-label">Or login with</span>
+                    <h3><a href="/auth/google"><i class="fa-brands fa-google"></i></a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%-include('includes/log_footer')-%>

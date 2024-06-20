@@ -1,0 +1,289 @@
+<%-include('includes/index_header')-%>
+    <!-- Header -->
+    <header class="header" id="header" >
+      <!-- Top Nav -->
+      <!-- <div class="top-nav">
+        <div class="container d-flex">
+       
+          <ul class="d-flex">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div> -->
+      <div class="navigation">
+        <div class="nav-center container d-flex">
+        <a href="/" class="logo"><h1>BAGSON</h1></a>
+
+          <ul class="nav-list d-flex">
+            <li class="nav-item">
+              <a href="/" class="nav-link">Home</a>
+            </li>
+            <li class="nav-item">
+              <a href="/prod" class="nav-link">Shop</a>
+            </li>
+            <li class="nav-item">
+            <a href="#terms" class="nav-link">Terms</a>
+            </li>
+            <li class="nav-item">
+              <a href="#about" class="nav-link">About</a>
+            </li>
+            <li class="nav-item">
+              <a href="#contact" class="nav-link">Contact</a>
+            </li>
+            <li class="icons d-flex">
+            <a href="/profile" class="icon">
+              <i class="bx bx-user"></i>
+            </a>
+            <div class="icon">
+              <i class="bx bx-search"></i>
+            </div>
+           <a href="/wishlisted"> <div class="icon">
+              <i class="bx bx-heart"></i>
+              <span class="d-flex">0</span>
+            </div></a>
+            <a href="/cart" class="icon">
+              <i class="bx bx-cart"></i>
+              <span class="d-flex"></span>
+            </a>
+          
+          </li>
+          </ul>
+                     
+          <div class="icons d-flex">
+            <a href="/profile" class="icon">
+              <i class="bx bx-user"></i>
+            </a>
+            <div class="icon">
+              <i class="bx bx-search"></i>
+            </div>
+          <a href="/wishlisted"> <div class="icon">
+              <i class="bx bx-heart"></i>
+              <!-- <span class="d-flex">0</span> -->
+            </div></a>
+            <a href="/cart" class="icon">
+              <i class="bx bx-cart"></i>
+              <!-- <span class="d-flex">0</span> -->
+            </a>
+            <% if (userToken) { %>
+            <a href="/userlogout"><i class="ion-log-in"></i> Logout  </a>
+          </div>
+                <% } %>
+          <div class="hamburger">
+            <i class="bx bx-menu-alt-left"></i>
+          </div>
+        </div>
+      </div>
+
+    <div class="hero">
+      <div class="glide" id="glide_1">
+       
+        <div class="glide__track" >
+          <div class="glide__slides">
+            
+         
+          </div>
+        </div>
+      </div>
+    </div>
+    </header>
+
+    <!-- Categories Section -->
+    <section class="section category">
+      <div class="cat-center">
+       <a href="/women">
+        <div class="cat">
+          <img src="/assets/img/women.jpg" alt="" />
+          <div>
+            <p>WOMEN</p>
+          </div>
+       </a>
+        </div>
+        <div class="cat">
+         <a href="/kid">
+          <img src="/assets/img/kid.jpg" alt="" />
+          <div>
+            <p>KIDS</p>
+          </div>
+         </a>
+        </div>
+        <div class="cat">
+          <a href="/mens">
+            <img src="/assets/img/men.jpg" alt="" />
+          <div>
+            <p>MENS</p>
+          </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- New Arrivals -->
+    <section class="section new-arrival">
+      <div class="title">
+        <h1>NEW ARRIVALS</h1>
+        <p>All the latest picked from designer of our store</p>
+      </div>
+
+      <div class="product-center">
+        <% products.forEach(product=>{%>
+        <div class="product-item">
+          <div class="overlay">
+            <a href="productdetail?id=<%=product._id %>" class="product-thumb">
+              <img src="<%=product.images[0] %>" alt="" />
+            </a>
+          </div>
+          <div class="product-info">
+            <span><a href="/productdetail?id=<%=product._id  %>"><%=product.product_name %></a></span>
+            <h5>&#8377 <%=product.price %></h5>
+            <h4><%=product.brand %></h4>
+          </div>
+          <ul class="icons">
+            <% if (wishlist && wishlist.items.some(items=>items.productId.toString()===product._id.toString())) { %>
+            <li style="background-color: brown;"><i class="bx bx-heart"></i></li>
+            <% } else { %>
+              <li ><i class="bx bx-heart"></i></li>
+              <% } %>
+            <li><a href="/productdetail?id=<%=product._id  %>"><i class="bx bx-search"></i></a></li>
+            <li><a href="cart/<%=product._id %>"><i class="bx bx-cart"></i></a></li>
+          </ul>
+        </div>
+        <%}) %>
+       
+      </div>
+    </section>
+
+
+    <!-- Promo -->
+
+    <section class="section banner">
+<div class="left">
+  <span class="trend">Trend Design</span>
+  <h1>New Collection 24</h1>
+  <p>New Arrival <span class="color">Sale 50% OFF</span> Limited Time Offer</p>
+  <!-- <a href="#" class="btn btn-1">Discover Now</a> -->
+</div>
+<div class="right">
+  <img src="/assets/img/banner.png" alt="">
+</div>
+    </section>
+
+
+
+
+    <!-- Featured -->
+  
+    <section class="section new-arrival">
+      <div class="title">
+        <h1>Featured</h1>
+        <p>All the latest picked from designer of our store</p>
+      </div>
+
+      <div class="product-center">
+        <% products.forEach(product=>{%>
+          <div class="product-item ">
+            <div class="overlay " >
+              <a href="productdetail?id=<%=product._id %>" class="product-thumb">
+                <img src="<%=product.images[0] %>" alt="" />
+              </a>
+            </div>
+            <div class="product-info">
+              <span><a href="/productdetail?id=<%=product._id  %>"><%=product.product_name %></a></span>
+              <h5>&#8377 <%=product.price %></h5>
+              <h4><%=product.brand %></h4>
+            </div>
+            <ul class="icons">
+              <% if (wishlist && wishlist.items.some(items=>items.productId.toString()===product._id.toString())) { %>
+              <a href="wishlist/<%=product._id %>">  <li style="background-color: brown;"><i class="bx bx-heart"></i></li></a>
+                <% } else { %>
+                  <li> <a href="wishlist/<%=product._id %>"><i class="bx bx-heart"></i></a></li>
+                  <% } %>
+              <li><a href="/productdetail?id=<%=product._id  %>"><i class="bx bx-search"></i></a></li>
+              <li><a href="cart/<%=product._id %>"><i class="bx bx-cart"></i></a></li>
+            </ul>
+          </div>
+          <%}) %>
+          
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <!-- <section class="section contact">
+      <div class="row">
+        <div class="col">
+          <h2>EXCELLENT SUPPORT</h2>
+          <p>We love our customers and they can reach us any time
+          of day we will be at your service 24/7</p>
+          <a href="" class="btn btn-1">Contact</a>
+        </div>
+        <div class="col">
+          <form action="">
+            <div>
+              <input type="email" placeholder="Email Address">
+            <a href="">Send</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section> -->
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="row">
+        <div class="col d-flex">
+          <h4>INFORMATION</h4>
+          <a href="">About us</a>
+          <a href="">Contact Us</a>
+          <a href="">Term & Conditions</a>
+          <a href="">Shipping Guide</a>
+        </div>
+        <div class="col d-flex">
+          <h4>USEFUL LINK</h4>
+          <a href="">Online Store</a>
+          <a href="">Customer Services</a>
+          <a href="">Promotion</a>
+          <a href="">Top Brands</a>
+        </div>
+        <div class="col d-flex">
+          <span><i class='bx bxl-facebook-square'></i></span>
+          <span><i class='bx bxl-instagram-alt' ></i></span>
+          <span><i class='bx bxl-github' ></i></span>
+          <span><i class='bx bxl-twitter' ></i></span>
+          <span><i class='bx bxl-pinterest' ></i></span>
+        </div>
+      </div>
+    </footer>
+
+
+  <!-- PopUp -->
+  <!-- <div class="popup hide-popup">
+    <div class="popup-content">
+      <div class="popup-close">
+        <i class='bx bx-x'></i>
+      </div>
+      <div class="popup-left">
+        <div class="popup-img-container">
+          <img class="popup-img" src="./images/popup.jpg" alt="popup">
+        </div>
+      </div>
+      <div class="popup-right">
+        <div class="right-content">
+          <h1>Get Discount <span>50%</span> Off</h1>
+          <p>Sign up to our newsletter and save 30% for you next purchase. No spam, we promise!
+          </p>
+          <form action="#">
+            <input type="email" placeholder="Enter your email..." class="popup-form">
+            <a href="#">Subscribe</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.4.1/glide.min.js"></script>
+  
+  <script src="/assets/js/index.js"></script>
+  <script src="/assets/js/slider.js"></script>
+</html>

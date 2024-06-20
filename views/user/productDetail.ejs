@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Box icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/css/index.css" />
+  <title>BAGSO</title>
+</head>
+<body>
+  <!-- Navigation -->
+  <div class="navigation aju">
+    <div class="nav-center container d-flex">
+      <a href="/" class="logo"><h1>BAGSON</h1></a>
+      <ul class="nav-list d-flex">
+        <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="/prod" class="nav-link">Shop</a></li>
+        <li class="nav-item"><a href="#terms" class="nav-link">Terms</a></li>
+        <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
+        <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+        <li class="icons d-flex">
+          <a href="/profile" class="icon"><i class="bx bx-user"></i></a>
+          <div class="icon"><i class="bx bx-search"></i></div>
+          <a href="/wishlisted"><div class="icon"><i class="bx bx-heart"></i><span class="d-flex">0</span></div></a>
+          <a href="/cart" class="icon"><i class="bx bx-cart"></i><span class="d-flex">0</span></a>
+        </li>
+      </ul>
+      
+      <div class="hamburger"><i class="bx bx-menu-alt-left"></i></div>
+    </div>
+  </div>
+
+  <!-- Product Details -->
+  <section class="section product-detail">
+    <div class="details container">
+      <div class="left image-container">
+        <div class="main">
+          <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+              <% product.images.forEach((image, index) => { %>
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<%= index %>" class="<%= index === 0 ? 'active' : '' %>" aria-current="<%= index === 0 ? 'true' : 'false' %>" aria-label="Slide <%= index + 1 %>"></button>
+              <% }) %>
+            </div>
+            <div class="carousel-inner">
+              <% product.images.forEach((image, index) => { %>
+              <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                <img src="<%= image %>" class="d-block w-100" alt="">
+              </div>
+              <% }) %>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="right">
+        <h1><%= product.product_name %></h1>
+        <div class="price">&#8377; <%= product.price %></div>
+        <form action="/cart" method="post">
+          <div>
+            <!-- <select>
+              <option value="Select Size" selected disabled>Select Size</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+              <option value="XXL">XXL</option>
+            </select> -->
+            <span><i class="bx bx-chevron-down"></i></span>
+          </div>
+        </form>
+        <form class="form">
+          <a href="cart/<%=product._id %>" class="addCart">Add To Cart</a>
+        </form>
+        <form class="form">
+          <a href="wishlist/<%=product._id %>" class="addCart">Add Wishlist</a>
+        </form>
+        <h3>Product Detail</h3>
+        <p> <%= product.description %></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related -->
+  <section class="section featured">
+    <div class="top container">
+      <h1>Related Products</h1>
+      <a href="#" class="view-more">View more</a>
+    </div>
+    <div class="product-center container">
+      <% products.forEach(product => { %>
+      <div class="product-item">
+        <div class="overlay">
+          <a href="productdetail?id=<%= product._id %>" class="product-thumb">
+              <img src="<%= product.images[0] %>" alt="" />
+            </a>
+        </div>
+        <div class="product-info">
+          <a href="/productdetail?id=<%= product._id %>">   <span><%= product.product_name %></span>
+              <h4><%= product.brand %></h4>
+          <h5>&#8377 <%= product.price %></h5>
+        </div>
+        <ul class="icons">
+          <li><i class="bx bx-heart"></i></li>
+          <li><a href="/productdetail?id=<%= product._id %>"></a><i class="bx bx-search"></i></li>
+          <li><a href="cart/<%=product._id %>"><i class="bx bx-cart"></i></a></li>
+        </ul>
+      </div>
+      <% }) %>
+      </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="row">
+      <div class="col d-flex">
+        <h4>INFORMATION</h4>
+        <a href="#">About us</a>
+        <a href="#">Contact Us</a>
+        <a href="#">Term & Conditions</a>
+        <a href="#">Shipping Guide</a>
+      </div>
+      <div class="col d-flex">
+        <h4>USEFUL LINK</h4>
+        <a href="#">Online Store</a>
+        <a href="#">Customer Services</a>
+        <a href="#">Promotion</a>
+        <a href="#">Top Brands</a>
+      </div>
+      <div class="col d-flex">
+        <span><i class="bx bxl-facebook-square"></i></span>
+        <span><i class="bx bxl-instagram-alt"></i></span>
+        <span><i class="bx bxl-github"></i></span>
+        <span><i class="bx bxl-twitter"></i></span>
+        <span><i class="bx bxl-pinterest"></i></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Custom Script -->
+  <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha384-JUMjoW8OzDJw4oFpWIB2Bu/c6768ObEthBMVSiIx4ruBIEdyNSUQAjJNFqT5pnJ6" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/assets/js/userSoom.js"></script>
+  <script>
+    $(function () {
+      console.log("hello");
+      $("#zoom").imagezoomsl({
+        zoomrange: [4, 4],
+      });
+    });
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,405 @@
+<%- include('includes/header') -%>
+
+<!-- navbar -->
+<%- include('includes/navbr') -%>
+
+<div class="container-fluid ms-md-4 mt-4">
+    <div class="row">
+        <div class="col-md-3 col-sm-6 account-nav rounded shadow">
+            <div class="row">
+                <div class="col-4"><label for="name"><%= user.name %></label></div>
+                <div class="col-8"><a class="nav-link" href="/cart">
+                    <!-- <i class="fa-solid fa-wallet me-1"></i>Wallet Amount : <%= user.walletAmount%></a> -->
+                </div>
+                </div>
+            <hr>
+            <ul class="list-unstyled">
+                <li>
+                    <a href="/profile" class="text-decoration-none text-dark">Profile</a>
+                </li>
+                <li>
+                    <a href="/useraddress" class="text-decoration-none text-dark">Addresses</a>
+                </li>
+                <li>
+                    <a href="/userorders" class="text-decoration-none text-white bg-primary d-block py-2 rounded">My Orders</a>
+                </li>
+                <li>
+                    <a href="/wishlisted" class="text-decoration-none text-dark">My Wishlist</a>
+                </li>
+                <li>
+                    <a href="/wallethistory" class="text-decoration-none text-dark">Wallet History</a>
+                </li>
+                <li>
+                    <a href="/forgot-otp" class="text-decoration-none text-dark">Forgot Password</a>
+                </li>
+                <hr>
+                <li>
+                    <a href="/userlogout" class="text-decoration-none text-danger">Logout</a>
+                </li>
+            </ul>
+            
+            
+        </div>
+<!-- //orders -->
+<div class="col-md-9 checkout">
+    <div class="container">
+        <div class="d-flex justify-content-between">
+            <h4>Orders</h4>
+
+        </div>
+
+        <hr>
+        <div class="row">
+            <div class="col-lg-12">
+                <nav>
+                    <div class="nav nav-tabs mb-3">
+                        <button class="nav-link active border-white border-bottom-0" type="button" role="tab"
+                            id="nav-placed-tab" data-bs-toggle="tab" data-bs-target="#nav-placed"
+                            aria-controls="nav-placed" aria-selected="true">Order Placed</button>
+                        <button class="nav-link  border-white border-bottom-0" type="button" role="tab"
+                            id="nav-delivered-tab" data-bs-toggle="tab" data-bs-target="#nav-delivered"
+                            aria-controls="nav-delivered" aria-selected="true">Delivered</button>
+                        <button class="nav-link border-white border-bottom-0" type="button" role="tab"
+                            id="nav-return-requested-tab" data-bs-toggle="tab" data-bs-target="#nav-return-requested"
+                            aria-controls="nav-return-requested" aria-selected="false">Return Requested</button>
+                        <button class="nav-link border-white border-bottom-0" type="button" role="tab"
+                            id="nav-cancelled-tab" data-bs-toggle="tab" data-bs-target="#nav-cancelled"
+                            aria-controls="nav-cancelled" aria-selected="false">Cancelled</button>
+                        <button class="nav-link border-white border-bottom-0" type="button" role="tab"
+                            id="nav-returned-tab" data-bs-toggle="tab" data-bs-target="#nav-returned"
+                            aria-controls="nav-returned" aria-selected="false">Returned</button>
+                    </div>
+                </nav>
+                <div class="tab-content mb-5">
+                    <div class="tab-pane active ms-4" id="nav-placed" role="tabpanel" aria-labelledby="nav-placed-tab">
+                        <% orders.filter(order => order.status === 'Pending' || order.status === 'Order Payment Failed').forEach(order => { %>
+                        <div class="col-md-12 mb-3">
+                            <div class="card shadow">
+                                <a href="/orderDetails/<%= order._id %>" style="text-decoration: none;">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="card-title text-muted m-2">OrderID. <%= order.orderId %></h5>
+                                        <% if (order.status === 'Pending') { %>
+                                        <button class="btn btn-danger cancel-order-btn" data-order-id="<%= order._id %>">Cancel Order</button>
+                                        <% } %>
+                                    </div>
+                                </a>
+                                <div class="card-body">
+                                    <!-- Display payment status with Bootstrap classes -->
+                                    <div class="d-flex">
+                                        <!-- Apply Bootstrap's success or danger class based on payment status -->
+                                        <span class="m-1 font-weight-bold text-<%= order.paymentStatus === 'Paid' ? 'success' : 'danger' %>">Payment Status: <%= order.paymentStatus %></span>
+                                    </div>
+                                    <!-- Display order details -->
+                                    <div class="d-flex">
+                                        <span class="m-1 font-weight-bold">Order Date: <%= new Date(order.orderedDate).toDateString() %></span>
+                                    </div>
+                                    <div class="d-flex">
+                                        <span class="m-1 font-weight-bold">Total Items: <%= order.items.length %></span>
+                                    </div>
+                                    <div class="d-flex">
+                                        <span class="m-1 font-weight-bold">Payment Method: <%= order.paymentMethod %></span>
+                                    </div>
+                                    <div class="d-flex">
+                                        <span class="m-1 font-weight-bold">Total Amount: <%= order.totalAmount %></span>
+                                    </div>
+                                    <!-- Add form for Razorpay payment -->
+                                    <% if (order.status === 'Order Payment Failed') { %>
+                                    <form id="razorpay-form" action="/razorpay/pay/<%= order._id %>" method="POST">
+                                        <input type="hidden" name="orderId" value="<%= order._id %>">
+                                        <!-- Razorpay script and button -->
+                                        <!-- Ensure to replace the Razorpay data with appropriate values -->
+                                        <script src="https://checkout.razorpay.com/v1/checkout.js" data-key="rzp_test_l0JN45NspADoRo" data-amount="<%= order.totalAmount * 100 %>" data-currency="INR" data-order_id="<%= order.razorpayOrderId %>" data-buttontext="" data-name="LOOM &" data-description="Payment for Order <%= order._id %>" data-image="/img/loomblack.png" data-prefill.name="<%= user.name %>" data-prefill.email="<%= user.email %>" data-theme.color="#4169E1">
+                                        </script>
+                                        <button id="rzp-button" class="btn btn-primary">Pay with Razorpay</button>
+                                    </form>
+                                    <% } %>
+                                    <!-- Add more order details here -->
+                                </div>
+                            </div>
+                        </div>
+                        <% }); %>
+                    </div>
+                    
+                    <div class="tab-pane" id="nav-delivered" role="tabpanel" aria-labelledby="nav-delivered-tab">
+                        <% orders.filter(order => order.status === 'Delivered').forEach(order => { %>
+
+                                <div class="col-md-12 mb-3">
+                                    <div class="card shadow">
+                                        <a href="/orderDetails/<%= order._id %>" style="text-decoration: none;">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h5 class="card-title text-muted m-2">OrderID. <%= order.orderId %></h5>
+                                            <span class="text-success">Order Delivered</span>
+                                            <a href="#" id="return-order-btn" class="btn btn-success return-order-btn" data-order-id="<%= order._id %>">Return</a>
+                                        </div>
+                                       </a>
+                                        <div class="card-body">
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Order Date: <%= new Date(order.orderedDate).toDateString() %></span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Total Items: <%= order.items.length %></span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Payment Method: <%= order.paymentMethod %></span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Total Amount: <%= order.totalAmount %></span>
+                                            </div>
+                                            <!-- <form action="/orders/<%= order._id %>/invoice" method="GET">
+                                                         <button type="submit" class="btn btn-primary">Download Invoice</button>
+                                                   </form> -->
+                            
+                                            <!-- Add more order details here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        <% }); %>
+                    </div>
+                    
+                    <div class="tab-pane" id="nav-return-requested" role="tabpanel" aria-labelledby="nav-return-requested-tab">
+                        <% orders.filter(order => order.status === 'Return Requested').forEach(order => { %>
+
+                                <div class="col-md-12 mb-3">
+                                    <div class="card shadow">
+                                        <a href="/orderDetails/<%= order._id %>" style="text-decoration: none;">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h5 class="card-title text-muted m-2">OrderID. <%= order.orderId %></h5>
+                                            <span class="text-success">Order Delivered</span>
+                                            <a href="#" id="cancel-return-btn" class="btn btn-success cancel-return-btn" data-order-id="<%= order._id %>">Cancel Return</a>
+                                        </div>
+                                    </a>
+                                        <div class="card-body">
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Order Date: <%= new Date(order.orderedDate).toDateString() %></span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Total Items: <%= order.items.length %></span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Payment Method: <%= order.paymentMethod %></span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Total Amount: <%= order.totalAmount %></span>
+                                            </div>
+                                            <!-- <form action="/orders/<%= order._id %>/invoice" method="GET">
+                                                         <button type="submit" class="btn btn-primary">Download Invoice</button>
+                                                   </form> -->
+                            
+                                            <!-- Add more order details here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        <% }); %>
+                    </div>
+                    <div class="tab-pane" id="nav-cancelled" role="tabpanel" aria-labelledby="nav-cancelled-tab">
+                        <% orders.filter(order => order.status === 'Cancelled').forEach(order => { %>
+                                <div class="col-md-12 mb-3">
+                                    <div class="card shadow">
+                                        <a href="/orderDetails/<%= order._id %>" style="text-decoration: none;"> 
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h5 class="card-title text-muted m-2">OrderID. <%= order.orderId %></h5>
+                                            <span class="text-danger">Order Cancelled</span>
+                                        </div></a>
+                                        <div class="card-body">
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Order Date: <%= new Date(order.orderedDate).toDateString() %></span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Total Items: <%= order.items.length %></span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Payment Method: <%= order.paymentMethod %></span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Total Amount: <%= order.totalAmount %></span>
+                                            </div>
+                                            <!-- <form action="/orders/<%= order._id %>/invoice" method="GET">
+                                                         <button type="submit" class="btn btn-primary">Download Invoice</button>
+                                                   </form> -->
+                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        <% }); %>
+                    </div>
+                    <div class="tab-pane" id="nav-returned" role="tabpanel" aria-labelledby="nav-returned-tab">
+                        <% orders.filter(order => order.status === 'Return Accepted').forEach(order => { %>
+
+                                <div class="col-md-12 mb-3">
+                                    <div class="card shadow">
+                                        <a href="/orderDetails/<%= order._id %>" style="text-decoration: none;">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h5 class="card-title text-muted m-2">OrderID. <%= order.orderId %></h5>
+                                            <span class="text-danger">Order Returned, Amount Refunded</span>
+                                        </div>
+                                        </a>
+                                        <div class="card-body">
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Order Date: <%= new Date(order.orderedDate).toDateString() %></span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Total Items: <%= order.items.length %></span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Payment Method: <%= order.paymentMethod %></span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <span class="m-1 font-weight-bold">Total Amount: <%= order.totalAmount %></span>
+                                            </div>
+                                            <form action="/orders/<%= order._id %>/invoice" method="GET">
+                                                         <button type="submit" class="btn btn-primary">Download Invoice</button>
+                                                   </form>
+                                
+                                            <!-- Add more order details here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('includes/userFooter') -%>
+
+<%- include('includes/footer') -%>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function() {
+        // Handler for cancel order button click
+        $('.cancel-order-btn').click(function(e) {
+            e.preventDefault();
+    
+            const orderId = $(this).data('order-id');
+    
+            swal.fire({
+                title: "Are you sure?",
+                text: "Once cancelled, you cannot undo this action!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, cancel it!",
+                cancelButtonText: "No, keep it"
+            }).then((willCancel) => {
+                if (willCancel.isConfirmed) {
+                    // Send AJAX request to cancel the order
+                    $.ajax({
+                        url: `/cancelOrder/${orderId}`,
+                        type: 'GET',
+                        success: function(response) {
+                            swal.fire("Success!", "Your order has been cancelled.", "success");
+                            console.log(response);
+                            location.reload()
+                        },
+                        error: function(xhr, status, error) {
+                            swal.fire("Error!", "Failed to cancel the order.", "error");
+                            console.error(xhr.responseText);
+                        }
+                    });
+                } else {
+                    swal.fire("Cancelled", "Your order is safe :)", "error");
+                }
+            });
+        });
+    
+        // Handler for return order button click
+        $('.return-order-btn').click(function(e) {
+            e.preventDefault();
+    
+            const orderId = $(this).data('order-id');
+    
+            // Show SweetAlert confirmation dialog
+            swal.fire({
+                title: "Are you sure?",
+                text: "Once returned, you cannot undo this action!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, return it!",
+                cancelButtonText: "No, keep it"
+            }).then((willReturn) => {
+                if (willReturn.isConfirmed) {
+                    // Send AJAX request to return the order
+                    $.ajax({
+                        url: `/returnOrder/${orderId}`,
+                        type: 'GET',
+                        success: function(response) {
+                            swal.fire("Success!", "Your order return has been requested.", "success");
+                            console.log(response);
+                            location.reload()
+                            // Handle success response if needed
+                        },
+                        error: function(xhr, status, error) {
+                            swal.fire("Error!", "Failed to return the order.", "error");
+                            console.error(xhr.responseText);
+                            // Handle error response if needed
+                        }
+                    });
+                } else {
+                    swal.fire("Cancelled", "Your order is safe :)", "error");
+                }
+            });
+        });
+    
+        // Handler for cancel return button click
+        $('.cancel-return-btn').click(function(e) {
+            e.preventDefault();
+    
+            const orderId = $(this).data('order-id');
+    
+            // Show SweetAlert confirmation dialog
+            swal.fire({
+                title: "Are you sure?",
+                text: "Once cancelled, you cannot undo this action!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, cancel it!",
+                cancelButtonText: "No, keep it"
+            }).then((willCancel) => {
+                if (willCancel.isConfirmed) {
+                    // Send AJAX request to cancel the return
+                    $.ajax({
+                        url: `/cancelReturn/${orderId}`,
+                        type: 'GET',
+                        success: function(response) {
+                            swal.fire("Success!", "Return request has been cancelled.", "success");
+                            console.log(response);
+                            location.reload()
+                            // Handle success response if needed
+                        },
+                        error: function(xhr, status, error) {
+                            swal.fire("Error!", "Failed to cancel the return request.", "error");
+                            console.error(xhr.responseText);
+                            // Handle error response if needed
+                        }
+                    });
+                } else {
+                    swal.fire("Cancelled", "Your return request is safe :)", "error");
+                }
+
+            });
+        });
+    });
+    document.getElementById('viewOrderBtn').addEventListener('click', () => {
+  const orderId = event.target.textContent;
+  fetch(`/orders/${orderId}/invoice`)
+    .then(response => response.blob())
+    .then(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${orderId}.pdf`;
+      a.click();
+    })
+    .catch(error => {
+      console.error('Error fetching order data:', error);
+    });
+});
+
+
+</script>

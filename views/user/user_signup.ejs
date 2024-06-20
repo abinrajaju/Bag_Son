@@ -1,0 +1,92 @@
+
+<%-include('includes/log_header')-%>
+
+<section class="signup">
+    <div class="container">
+        <div class="signup-content">
+            <div class="signup-form">
+                <h2 class="form-title">Sign up</h2>
+                <form method="POST" class="register-form" id="register-form" action="/usersignup" onsubmit="return validateForm()">
+                    <div class="form-group">
+                        <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                        <input type="text" name="name" id="name" placeholder="Your Name"  />
+                        <div class="error-message" id="name-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email"><i class="zmdi zmdi-email"></i></label>
+                        <input type="email" name="email" id="email" placeholder="Your Email"  />
+                        <div class="error-message" id="email-error"><%= message %></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pass"><i class="zmdi zmdi-lock"></i></label>
+                        <input type="password" name="pass" id="pass" placeholder="Password"  minlength="6" />
+                        <div class="error-message" id="password-error"></div>
+                    </div>   
+                    <div class="form-group">
+                        <label for="confirm_pass"><i class="zmdi zmdi-lock-outline"></i></label>
+                        <input type="password" name="confirm_password" id="confirm_pass" placeholder="Confirm Password"/>
+                        <div class="error-message" id="confirm-password-error"></div>
+                        
+                    </div>
+                    
+                  
+                    <div class="form-group form-button">
+                        <input type="submit" name="signup" id="signup" class="form-submit" value="Register"/>
+                    </div>
+                </form>
+            </div>
+            <div class="signup-image">
+                <figure><img src="/assets/img/signup.jpg" alt="sign up image"></figure>
+                <a href="userlogin" class="signup-image-link">I am already member</a>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    function validateForm() {
+        let valid = true;
+
+        // Clear previous error messages
+        document.getElementById('name-error').textContent = '';
+        document.getElementById('email-error').textContent = '';
+        document.getElementById('password-error').textContent = '';
+         document.getElementById('confirm-password-error').innerText = ''
+        // Validate name
+        const name = document.getElementById('name').value;
+        if (name.trim() === '') {
+            document.getElementById('name-error').textContent = 'Name is required.';
+            valid = false;
+        }
+
+        // Validate email
+        const email = document.getElementById('email').value;
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            document.getElementById('email-error').textContent = 'Please enter a valid email address.';
+            valid = false;
+        }
+
+        // Validate password
+        const password = document.getElementById('pass').value;
+        if (password.length < 6) {
+            document.getElementById('password-error').textContent = 'Password must be at least 6 characters long.';
+            valid = false;
+        }
+          
+        const confirmPassword = document.getElementById('confirm_pass').value;
+        if (password !== confirmPassword) {
+            document.getElementById('confirm-password-error').innerText = 'Passwords do not match.';
+            valid = false;
+        }
+        return valid;
+    }
+</script>
+
+<style>
+    .error-message {
+        color: red;
+        font-size: 0.9em;
+    }
+</style>
+</body>
+</html>
