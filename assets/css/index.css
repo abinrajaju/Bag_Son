@@ -1471,4 +1471,25 @@ th:last-child {
 
 .checkout-section .btn-primary:hover {
   background-color: #45a049;
+}.quantity {
+  display: flex;
+  align-items: center;
+}
+.quantity-btn {
+  background-color: #ccc;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+.quantity-btn:disabled {
+  cursor: not-allowed;
+}
+input[type="number"] {
+  width: 50px;
+  text-align: center;
+  margin: 0 5px;
+}
+.btn2{
+  padding-left: 7px;
+  padding-right: 7px;
 }

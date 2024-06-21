@@ -4,6 +4,18 @@ const productdb=require('../../model/product')
 const cartdb=require('../../model/cartmodel')
 const orderdb=require('../../model/odermodel')
 
+const Razorpay=require('razorpay')
+
+
+var razorpay = new Razorpay({
+    key_id: 'rzp_test_K8UOfpQbtMjHOa',
+    key_secret: 'dSFQLBx52LesmPYUchtq7c06',
+  });
+
+
+   
+
+
 const get_checkout= async(req,res)=>{
 
     
@@ -156,10 +168,111 @@ const placed=async(req,res)=>{
         res.status(400).render('error500')
 
     }
+}  
+
+
+const onlinepayment=async(req,res)=>{
+    try {
+       
+    
+        const totalAmount = req.body.totalamount;
+
+        const order =await razorpay.orders.create({
+            amount: totalAmount * 100,
+            currency: 'INR',
+            payment_capture:1
+        });
+
+
+        res.json({ order });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating Razorpay order' });
+    }
 }
 
 
+const onlinepayed=async(req,res)=>{
+    try {
+        console.log("Processing stock result...");
+        const { data, paymentMethod } = req.query;
+        console.log(paymentMethod);
+        const parsedData = JSON.parse(data)
+        const { items, addressId } = parsedData;
+
+        console.log(parsedData, "daata");
+        console.log(paymentMethod);
+
+
+        const address = await addressdb.findById(addressId);
+        console.log(address);
+        if (!address) {
+            return res.status(401).json({ message: 'Address not found', status: 401 });
+        }
+
+
+        const User = await userdb.findOne({ email: req.session.email });
+        if (!User) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const userId = User._id;
+
+
+
+        const updatedProducts = [];
+        for (const item of items) {
+            const productId = item.productId;
+            console.log('productId', productId);
+
+            const product = await productdb.findById(productId);
+            if (!product) {
+                console.log(`Product with ID ${productId} not found`);
+                continue;
+            }
+
+            if (product.stock < item.quantity) {
+                return res.status(400).json({ message: `Product with ID ${productId} is out of stock` });
+            }
+
+            product.stock -= item.quantity;
+            await product.save();
+
+            updatedProducts.push({
+                productId: productId,
+                price: product.price,
+                quantity: item.quantity,
+            });
+        }
+
+        const totalAmount = updatedProducts.reduce((total, item) => total + item.price * item.quantity, 0);
+
+
+        const order = new orderdb({
+            userId: userId,
+            items: updatedProducts,
+            totalAmount: totalAmount,
+            address: address,
+            paymentMethod: paymentMethod,
+            paymentStatus:"Completed",
+            status:'Shipped'
+        });
+
+        await order.save();
+
+        await cartdb.findOneAndDelete({ user: userId });
+
+
+        res.redirect('/thankyou')
+ 
+
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
 
 module.exports={
-    get_checkout,oder_place,check_stock,placed
+    get_checkout,oder_place,check_stock,placed,onlinepayment,onlinepayed
 }

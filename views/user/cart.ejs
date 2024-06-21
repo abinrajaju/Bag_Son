@@ -91,32 +91,25 @@
           <th>Subtotal</th>
         </tr>
         <% user.items.forEach(item=>{%>
-        <tr>
-          
-          <td>
-            <div class="cart-info">       
-              <img src="<%=item.productId.images[0] %>" alt="" />
-              <div>
-                
-                <span> <%= item.productId.product_name %></span> <br />
-                <a href="remove/<%=item.productId._id %>" >remove<i class="fa-solid fa-trash"></i></a>
+          <tr>
+            <td>
+              <div class="cart-info">       
+                <img src="<%= item.productId.images[0] %>" alt="" />
+                <div>
+                  <span><%= item.productId.product_name %></span> <br />
+                  <a href="remove/<%= item.productId._id %>">remove<i class="fa-solid fa-trash"></i></a>
+                </div>
               </div>
-            </div>
-          </td>
-          <td><span class="input-group-btn">
-            <button type="button" class="quantity-left-minus btn" onclick="quantity('dec',<%= JSON.stringify(item) %>)" id="decrese"  >
-             <i class="icon-minus2"></i>
-            </button>
-          </span>
-          <input type="button" id="quantity_<%= item._id %>" name="quantity" class="form-control input-number" value="<%= item.quantity %>" min="1" max="20" disabled>
-         <span class="input-group-btn ml-1">
-            <button type="button" class="quantity-right-plus btn" onclick="quantity('inc',<%= JSON.stringify(item) %>)" data-type="plus" >
-               <i class="icon-plus2"></i>
-           </button>
-         </span></td>
-          <td>&#8377;<%=item.productId.price%></td>
-          
-        </tr>
+            </td>
+            <td>
+              <div class="quantity">
+                <button class="quantity-btn btn2" onclick="changeQuantity('<%= item.productId._id %>', -1)">-</button>
+                <input type="number" id="quantity-<%= item.productId._id %>" value="1" min="1" readonly />
+                <button class="quantity-btn" onclick="changeQuantity('<%= item.productId._id %>', 1)">+</button>
+              </div>
+            </td>
+            <td>&#8377;<%= item.productId.price %></td>
+          </tr>
         <% }) %>
         </table>
         <div class="total-price">
@@ -140,84 +133,6 @@
    
     <% } %>
 
-    <!-- Latest Products -->
-    <!-- <section class="section featured">
-      <div class="top container">
-        <h1>Latest Products</h1>
-        <a href="#" class="view-more">View more</a>
-      </div>
-      <div class="product-center container">
-        <div class="product-item">
-          <div class="overlay">
-            <a href="" class="product-thumb">
-              <img src="./images/product-6.jpg" alt="" />
-            </a>
-          </div>
-          <div class="product-info">
-            <span>MEN'S CLOTHES</span>
-            <a href="">Concepts Solid Pink Men’s Polo</a>
-            <h4>$150</h4>
-          </div>
-          <ul class="icons">
-            <li><i class="bx bx-heart"></i></li>
-            <li><i class="bx bx-search"></i></li>
-            <li><i class="bx bx-cart"></i></li>
-          </ul>
-        </div>
-        <div class="product-item">
-          <div class="overlay">
-            <a href="" class="product-thumb">
-              <img src="./images/product-1.jpg" alt="" />
-            </a>
-            <span class="discount">40%</span>
-          </div>
-          <div class="product-info">
-            <span>MEN'S CLOTHES</span>
-            <a href="">Concepts Solid Pink Men’s Polo</a>
-            <h4>$150</h4>
-          </div>
-          <ul class="icons">
-            <li><i class="bx bx-heart"></i></li>
-            <li><i class="bx bx-search"></i></li>
-            <li><i class="bx bx-cart"></i></li>
-          </ul>
-        </div>
-        <div class="product-item">
-          <div class="overlay">
-            <a href="" class="product-thumb">
-              <img src="./images/product-3.jpg" alt="" />
-            </a>
-          </div>
-          <div class="product-info">
-            <span>MEN'S CLOTHES</span>
-            <a href="">Concepts Solid Pink Men’s Polo</a>
-            <h4>$150</h4>
-          </div>
-          <ul class="icons">
-            <li><i class="bx bx-heart"></i></li>
-            <li><i class="bx bx-search"></i></li>
-            <li><i class="bx bx-cart"></i></li>
-          </ul>
-        </div>
-        <div class="product-item">
-          <div class="overlay">
-            <a href="" class="product-thumb">
-              <img src="./images/product-2.jpg" alt="" />
-            </a>
-          </div>
-          <div class="product-info">
-            <span>MEN'S CLOTHES</span>
-            <a href="">Concepts Solid Pink Men’s Polo</a>
-            <h4>$150</h4>
-          </div>
-          <ul class="icons">
-            <li><i class="bx bx-heart"></i></li>
-            <li><i class="bx bx-search"></i></li>
-            <li><i class="bx bx-cart"></i></li>
-          </ul>
-        </div>
-      </div>
-    </section> -->
 
     <!-- Footer -->
     <footer class="footer">
@@ -248,6 +163,17 @@
 
     <!-- Custom Script -->
     <script src="/assets/js/index.js"></script>
+    <script>
+      function changeQuantity(productId, delta) {
+        const quantityInput = document.getElementById(`quantity-${productId}`);
+       
+        let currentValue = parseInt(quantityInput.value);
+        
+        if (currentValue + delta >= 1) {
+          quantityInput.value = currentValue + delta;
+        }
+      }
+    </script>
     
   </body>
 </html>

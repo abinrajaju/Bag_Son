@@ -259,7 +259,7 @@
         <td colspan="2">
             <h5 class="font-size-14 m-0">Total:</h5>
         </td>
-        <td>
+        <td data-balance="<%= products.balance %>">
             <%= products.balance %>
         </td>
     </tr>
@@ -370,11 +370,55 @@
 								})
 
 						}
+                            else if(paymentMethod === 'online' && items.length != 0){
+                                const balanceElement = document.querySelector('td[data-balance]');
+                                const totalamount = balanceElement.getAttribute('data-balance');
+                                fetch('/razorpayment', {
+								method: 'post',
+								headers: {
+									'content-Type': 'application/json'
+								},
+								body: JSON.stringify({ totalamount })
+							}).then(res => res.json())
+                            .then(res => {
+                                const options = {
+										"key": "rzp_test_K8UOfpQbtMjHOa",
+										"amount": res.order.amount,
+										"currency": "INR",
+										"name": 'BAGSON', 
+										"description": "Test Transaction",
+										"image": "",
+										"order_id": res.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+										"callback_url": `/onlinepayment?paymentMethod=${paymentMethod}&data=${JSON.stringify(data)}`,
+										"prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+											// "name": "Gaurav Kumar", //your customer's name
+											// "email": "",
+											// "contact": "" //Provide the customer's phone number for better conversion rates 
+										},
+										"notes": {
+											"address": "Razorpay Corporate Office"
+										},
+										"theme": {
+											"color": "#3399cc"
+										}
+									};
+									const rzp1 = new Razorpay(options);
+									rzp1.open();
+                            })
+                            }
+
+
                     }
     })
 })
 
+
+
+
+
     </script>
+    <button id="rzp-button1">Pay</button>
+	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </body>
 
 </html>

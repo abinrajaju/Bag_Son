@@ -67,5 +67,8 @@ route.get('/checkout',checkout.get_checkout)
 route.post('/stockresult',checkout.oder_place)
 route.post('/verifyStock',checkout.check_stock)
 route.get('/thankyou',checkout.placed)
+route.post('/razorpayment',checkout.onlinepayment)
+route.post('/onlinepayment',checkout.onlinepayed)
+
 
 module.exports=route
