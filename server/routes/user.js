@@ -45,6 +45,7 @@ route.get('/addaddress',profile.get_address)
 route.post('/addaddress',profile.add_address)
 route.delete('/useraddress/:id',profile.delete_address)
 route.get('/cancelOrder/:orderId',profile.cancelOrder)
+route.get('/wallethistory',profile.getwallet)
 
 //cart
 route.get('/cart',cart.get_cart)
@@ -69,6 +70,7 @@ route.post('/verifyStock',checkout.check_stock)
 route.get('/thankyou',checkout.placed)
 route.post('/razorpayment',checkout.onlinepayment)
 route.post('/onlinepayment',checkout.onlinepayed)
-
+route.post('/walletpay',checkout.walletpay)
+route.post('/applyCoupon',checkout.apply_coupon)
 
 module.exports=route

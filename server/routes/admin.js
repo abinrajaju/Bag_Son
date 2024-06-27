@@ -7,6 +7,7 @@ const productController=require('../controller/admin_control/product')
 const multer= require('multer')
 const path=require('path')
 const orderController=require('../controller/admin_control/order_control')
+const coupon=require('../controller/admin_control/coupon')
 
 //multer/
 const storage=multer.diskStorage({
@@ -49,6 +50,14 @@ route.delete('/delete-image/:productId/:imageIndex',productController.deleteImag
 route.get('/orders',orderController.get_order)
 route.post('/updateOrderStatus/:orderId',orderController.updateStatus)
 
+
+//coupon
+route.get('/coupon',coupon.get_coupon)
+route.get('/addCoupons',coupon.add_coupon)
+route.post('/addCoupons',coupon.add)
+route.delete('/couponDelete/:id',coupon.delet)
+route.get('/editCoupon/:id',coupon.edit)
+route.post('/editCoupon/:id',coupon.post_edit)
 
 
 module.exports=route

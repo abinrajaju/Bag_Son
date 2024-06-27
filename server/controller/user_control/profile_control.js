@@ -1,18 +1,24 @@
 const { render } = require('ejs')
 const userdb= require('../../model/usermodel')
 const addressdb=require('../../model/addressmodel')
-const oderdb = require('../../model/odermodel')
+const orderdb = require('../../model/odermodel')
 const wishlistdb=require('../../model/wishlistmodel')
 const cartdb=require('../../model/cartmodel')
 const productdb= require('../../model/product')
+const walletdb=require('../../model/walletmodel')
+const { logout } = require('./user_Controller')
+const wallet = require('../../model/walletmodel')
 
 
 
 const profile=async(req,res)=>{
    try{
+   
     const userToken= req.cookies.userToken
     const user= await userdb.findOne({email:req.session.email})
-    res.render('user/profile',{user,userToken})
+    const wallet= await walletdb.findOne({user:user})
+    
+    res.render('user/profile',{user,userToken,wallet})
    }catch(err){
     console.log(err);
     redirect('/err500')
@@ -38,7 +44,7 @@ const userorders= async(req,res)=>{
     try{
 
         const user= await userdb.findOne({email:req.session.email})
-        const orders= await oderdb.find({userId:user._id})
+        const orders= await orderdb.find({userId:user._id})
         orders.reverse()
         res.render('user/oderdetail',{user,orders})
     }catch(err){
@@ -191,23 +197,90 @@ const delete_address=async(req,res)=>{
 
 
 const cancelOrder=async(req,res)=>{
-        try{ const oderid=req.params.orderId
-             const delet=await oderdb.findByIdAndDelete(oderid)
-             res.status(200).json({ message:'success' });
-
-
-        }catch(err){
-            console.log(err);
-            res.status(500).json({ error: error.message });
+    try {
+        
+    
+        const orderId = req.params.orderId;
+        const reason = req.query.reason || "No reason provided";
+    
+    
+    
+        const userEmail = req.session.email
+        console.log(userEmail, "user");
+        const user = await userdb.findOne({ email: userEmail })
+        const userId = user._id;
+        console.log('userId', userId);
+    
+        const wallet = await walletdb.findOne({ user: userId })
+        const updateOrder = await orderdb.findByIdAndUpdate(orderId, {
+          $set: { status: "Cancelled", cancellationReason: reason }
+        }, { new: true }).populate("items.productId");
+    
+        if (!updateOrder) {
+          return res.status(404).json({ success: false, message: "Order not found" });
         }
+    
+        let totalRefund = 0;
+        let updatedWallet;
+    
+        for (const item of updateOrder.items) {
+          await productdb.findByIdAndUpdate(item.productId, {
+            $inc: { stock: item.quantity },
+          });
+    
+          const refundAmount = item.price * item.quantity;
+          totalRefund += refundAmount;
+          if (!wallet) {
+            const wallett = new walletdb({
+              user: user,
+              balance: refundAmount,
+              transactions: { type: 'refund', amount: refundAmount, description: `Order Returned for item ${item.productname}` }
+    
+            })
+            wallett.save()
+          } else {
+    
+            updatedWallet = await walletdb.findOneAndUpdate(
+              { user: userId },
+              {
+                $inc: { balance: refundAmount },
+                $push: { transactions: { type: 'refund', amount: refundAmount, description: `Order cancelled for item ${item.productname}` } }
+              },
+              { upsert: true, new: true }
+            );
+          }
+        }
+    
+        res.json({
+          success: true,
+          message: "Order cancelled successfully",
+          refundAmount: totalRefund,
+          newBalance: updatedWallet ? updatedWallet.balance : 0
+        });
+      } catch (error) {
+        console.error("Error in getCancelOrder:", error);
+        res.status(500).json({ success: false, message: "Error occurred during cancel order", error: error.message });
+      }
 
+}
+
+const getwallet=async(req,res)=>{
+    try{
+        
+        const user= await userdb.findOne({email:req.session.email})
+        const wallet= await walletdb.findOne({user:user})
+      
+        res.render('user/wallethistory',{walletHistory:wallet,user})
+
+    }catch(err){
+        console.log(err);
+    }
 }
 
 
 
 
 
-
 module.exports={
-    profile,address,userorders,wishlisted,add_wishlist,remove_wishlist,get_address,add_address,delete_address,cancelOrder
+    profile,address,userorders,wishlisted,add_wishlist,remove_wishlist,get_address,add_address,delete_address,cancelOrder,getwallet
 }

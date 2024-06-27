@@ -20,7 +20,8 @@
   <!-- Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <!-- CSS Files -->
-  <link id="pagestyle" href="/assets/css/category.css" rel="stylesheet" />
+  <link id="pagestyle" href="/assets/css/material-dashboard.min.css" rel="stylesheet" />
+  <link id="pagestyle" href="/css/material-dashboard.css?v=3.1.0" rel="stylesheet" />
   <!-- DataTable -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css" />
@@ -32,16 +33,13 @@
   <!-- Nepcha Analytics (nepcha.com) -->
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
   <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
-
 </head>
 
 <body class="g-sidenav-show  bg-gray-200 overflow-x-hidden">
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl sticky-top" id="navbarBlur" data-scroll="true">
       <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
-          <a class="navbar-brand fw-bolder" href="#">BAGSON</a>
+          <a class="navbar-brand fw-bolder" href="#">BRODWAY</a>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           <ul class="navbar-nav  justify-content-end">
@@ -87,7 +85,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white active bg-gradient-primary" href="/products">
+              <a class="nav-link text-white" href="/products">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="material-icons opacity-10">table_view</i>
                 </div>
@@ -103,7 +101,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white" href="/userdetail">
+              <a class="nav-link text-white" href="/allusers">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="material-icons opacity-10">person</i>
                 </div>
@@ -111,7 +109,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white" href="/coupons">
+              <a class="nav-link text-white active bg-gradient-primary" href="/coupons">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="material-icons opacity-10">redeem</i> 
                 </div>
@@ -148,85 +146,42 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="#" class="text-black">Admin</a></li>
-          <li class="breadcrumb-item"><a href="/allproducts" class="text-black">Products</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Add products</li>
+          <li class="breadcrumb-item"><a href="/coupons" class="text-black">Categcouponsory</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Edit  coupons</li>
       </ol>
   </nav>
   <label class="text-danger"></label>
   <div class="container-fluid py-4">
     <div class="productside">
       <div class="row">
-        <div class="col-6"><h2 class="me-3 text-decoration-underline">Add products</h2></div>
+        <div class="col-6"><h2 class="me-3 text-decoration-underline">Edit coupons</h2></div>
         <!-- <div class="col-6"> <a href="/admin/addproduct" class="bg-dark btn border-shadow shadow update">
           <span class="text-white">Add Products <b>+</b></span>
       </a></div> -->
       </div>
-    
-      <div class="row">
-        <div class="col-12 col-lg-6 card mb-10 rounded bg-black">
-          <form action="/multproduct" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
-            <div class="mb-3">
-              <label for="p_name" class="form-label">Product Name:</label>
-              <input type="text" class="form-control" id="p_name" name="product_name"  required>
-              <span id="nameError" class="error" style="color:red"></span>
-            </div>
-         
       
-    
-            <div class="mb-3">
-              <label for="category" class="form-label">Category:</label>
-             <select  class="form-control" name="Category" id="category">
-                <option value="">select a category</option>
-                <% categories.forEach(category=>{ %>
-                    <option value="<%= category._id %>"><%= category.CategoryName %></option>
-                <% }) %>
-             </select>
-            </div>
-
-  
-           
+      <div class="row">
+        <%=message%>
+        <div class="col-12 col-lg-6  card rounded bg-black">
+        <form action="/editCoupon/<%=get._id %>" method="POST" >
           <div class="mb-3">
-            <label for="stat" class="form-label">size:</label>
-            <input type="text" class="form-control" id="size" name="size" required>
-            
-        </div>
-          <div class="mb-3">
-              <label for="stat" class="form-label">Brand:</label>
-              <input type="text" class="form-control" id="brand" name="brand" required>
+              <label for="p_name" class="form-label">Category Code:</label>
+              <input type="text" class="form-control"  id="couponcode" name="couponcode" value="<%=get.couponcode %>" required>
           </div>
+
+       
           <div class="mb-3">
-            <label for="stat" class="form-label">color:</label>
-            <input type="text" class="form-control" id="color" name="color" required>
+            <label for="stat" class="form-label">discountPercentage:</label>
+            <input type="number" class="form-control" id="discountPercentage" name="discountPercentage" value="<%=get.discountPercentage %>" required min="10" max="70">
         </div>
         <div class="mb-3">
-          <label for="stat" class="form-label">price:</label>
-          <input type="number" min="1" class="form-control" id="price" name="price" required>
-          <span id="priceError" class="error" style="color:red"></span>
+          <label for="stat" class="form-label">expireDate:</label>
+          <input type="date" class="form-control" id="expireDate" name="expireDate" value="<%=get.expireDate%>" required>
       </div>
       <div class="mb-3">
-        <label for="stat" class="form-label">Discount:</label>
-        <input type="number" class="form-control" id="discount" name="discount" required>
-    </div>
-    <div class="mb-3">
-      <label for="stat" class="form-label">stock:</label>
-      <input type="number" class="form-control" id="stock" name="stock" required>
-      <span id="stockError" class="error" style="color:red"></span>
-  </div>
- 
-  <div class="mb-3">
-    <label for="images" class="form-label">Images</label><br>
-    <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple required>
-    <div id="imagePreview" class="mt-2"></div>
-</div>
-
- 
-  <div class="mb-3">
-    <label for="stat" class="form-label">Description:</label>
-    <textarea class="form-control" id="stat" name="stat"></textarea>
-</div>
-<button type="submit" class="btn btn-primary">Submit</button>
-
-           
+          <label for="stat" class="form-label">minPurchaseAmount:</label>
+          <input type="number" class="form-control" id="minPurchaseAmount" name="minPurchaseAmount" value="<%=get.minPurchaseAmount%>" required>
+          <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>
       </div>
@@ -240,25 +195,6 @@
     new DataTable('#userTable');
   
   </script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var image = document.getElementById('images');
-        var cropper = new Cropper(image, {
-            aspectRatio: 1, 
-            viewMode: 2,
-            autoCropArea: 1,
-            crop: function(event) {
-                console.log(event.detail.x);
-                console.log(event.detail.y);
-                console.log(event.detail.width);
-                console.log(event.detail.height);
-                console.log(event.detail.rotate);
-                console.log(event.detail.scaleX);
-                console.log(event.detail.scaleY);
-            }
-        });
-    });
-</script>
 
 
 
@@ -297,7 +233,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- <script>
+<script>
   function validateForm() {
         const inputs = document.querySelectorAll('input[type="text"], textarea');
 
@@ -319,51 +255,56 @@
 
         return true;
     }
-</script>  -->
-
-
+</script> 
 <script>
   function validateForm() {
-    var productName = document.getElementById('p_name').value.trim();
-    var category = document.getElementById('category').value.trim();
-    var size = document.getElementById('size').value.trim();
-    var brand = document.getElementById('brand').value.trim();
-    var color = document.getElementById('color').value.trim();
-    var price = document.getElementById('price').value.trim();
-    var discount = document.getElementById('discount').value.trim();
-    var stock = document.getElementById('stock').value.trim();
-    var images = document.getElementById('images').files;
-    var description = document.getElementById('stat').value.trim();
-
-    var isValid = true;
-
-    // Product Name validation
-    if (productName === "") {
-      document.getElementById('nameError').textContent = "Product Name is required";
-      isValid = false;
-    } else {
-      document.getElementById('nameError').textContent = "";
-    }
+    // Get the category name input field
+    const categoryNameInput = document.getElementById('categoryName');
     
+    // Get the value of the category name
+    const categoryName = categoryNameInput.value.trim().toLowerCase(); // Convert to lowercase for case-insensitive comparison
 
-    // Category validation
-    if (category === "") {
-      // You can customize the error message and behavior as needed
-      alert("Please select a category");
-      isValid = false;
+    // Check if the category name is empty
+    if (categoryName === '') {
+      // Display error message
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please enter a category name.',
+      });
+
+      // Focus on the category name input field
+      categoryNameInput.focus();
+
+      // Prevent form submission
+      return false;
     }
 
-    // Size, Brand, Color, Price, Discount, Stock, Description validation
-    // You can add similar validation for these fields as needed
+    // Check if the category name already exists (you need to implement this logic)
+    // You may need to make an AJAX request to your server to check for duplicate category names
+    // Replace 'checkDuplicateCategory' with the actual endpoint to check for duplicate category names
+    $.get('/checkDuplicateCategory?categoryName=' + categoryName, function(response) {
+      if (response.exists) {
+        // Display error message
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Category name already exists. Please enter a different name.',
+        });
 
-    // Images validation
-    if (images.length === 0) {
-      // You can customize the error message and behavior as needed
-      alert("Please select at least one image");
-      isValid = false;
-    }
+        // Focus on the category name input field
+        categoryNameInput.focus();
 
-    return isValid;
+        // Prevent form submission
+        return false;
+      } else {
+        // No duplicate category name found, allow form submission
+        return true;
+      }
+    });
+
+    // Prevent form submission before the AJAX request completes
+    return false;
   }
 </script>
 

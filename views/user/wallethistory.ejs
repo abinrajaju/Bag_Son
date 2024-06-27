@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-4"><label for="name"><%= user.name %></label></div>
                 <div class="col-8"><a class="nav-link" href="/cart">
-                    <i class="fa-solid fa-wallet me-1"></i>Wallet Amount : <%= user.walletAmount%></a></div>
+                    <i class="fa-solid fa-wallet me-1"></i>Wallet Amount : <%=walletHistory.balance %></a></div>
                 </div>
             <hr>
             <ul class="list-unstyled">
@@ -54,17 +54,17 @@
                 <th>Date</th>
                 <th>Transaction Type</th>
                 <th>Amount</th>
-                <th>OrderID</th>
-                <th>Details</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
-            <% walletHistory.forEach(wallet => { %>
+            <% walletHistory.transactions.forEach(wallet => { %>
                 <tr>
                     <td><%= wallet.timestamp.toDateString() %></td>
-                    <td><%= wallet.transactionType %></td>
+                    <td><%= wallet.type %></td>
                     <td>
-                        <% if (wallet.transactionType === 'Credit') { %>
+                        <% if (wallet.type === 'refund') { %>
                             <span class="text-success">+ <%= wallet.amount %></span>
                         <% } else if (wallet.transactionType === 'Debit') { %>
                             <span class="text-danger">- <%= wallet.amount %></span>

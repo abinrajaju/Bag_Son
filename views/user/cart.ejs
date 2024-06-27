@@ -90,7 +90,7 @@
           <th>Quantity</th>
           <th>Subtotal</th>
         </tr>
-        <% user.items.forEach(item=>{%>
+        <% user.items.forEach((item,index)=>{%>
           <tr>
             <td>
               <div class="cart-info">       
@@ -102,30 +102,30 @@
               </div>
             </td>
             <td>
+              <% if(item.productId.stock>0){ %>
               <div class="quantity">
-                <button class="quantity-btn btn2" onclick="changeQuantity('<%= item.productId._id %>', -1)">-</button>
-                <input type="number" id="quantity-<%= item.productId._id %>" value="1" min="1" readonly />
-                <button class="quantity-btn" onclick="changeQuantity('<%= item.productId._id %>', 1)">+</button>
+                <button class="quantity-btn btn2" onclick="quantity('dec',<%= JSON.stringify(item) %>)" id="decrese">-</button>
+                <input type="number" id="quantity-<%= item.productId._id %>"  value="<%= item.quantity %>" min="1" readonly />
+                <button class="quantity-btn" onclick="quantity('inc',<%= JSON.stringify(item) %>)" data-type="plus" >+</button>
               </div>
             </td>
-            <td>&#8377;<%= item.productId.price %></td>
+         
+            <td id="total_price_<%=item.productId.price %>">&#8377;<%= item.productId.price %></td>
+            <%}else{ %>
+              <td>out of Stock</td>
+              <%}%>
           </tr>
+          
         <% }) %>
         </table>
         <div class="total-price">
           <table>
             <tr>
-              <td>Subtotal</td>
+              <td>total</td>
               <td>&#8377;<%=user.totalAmount%></td>
             </tr>
-            <tr>
-              <td>Discount</td>
-              <td>&#8377;<%=user.totalDiscount%></td>
-            </tr>
-            <tr>
-              <td>Total</td>
-              <td>&#8377;<%=user.balance%></td>
-            </tr>
+           
+           
           </table>
           <a href="/checkout" class="checkout btn">Proceed To Checkout</a>
         </div>
@@ -163,16 +163,57 @@
 
     <!-- Custom Script -->
     <script src="/assets/js/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-      function changeQuantity(productId, delta) {
-        const quantityInput = document.getElementById(`quantity-${productId}`);
+      // function changeQuantity(productId, delta) {
        
-        let currentValue = parseInt(quantityInput.value);
+      //   const quantityInput = document.getElementById(`quantity-${productId}`);
+       
+      //   let currentValue = parseInt(quantityInput.value);
         
-        if (currentValue + delta >= 1) {
-          quantityInput.value = currentValue + delta;
+      //   if (currentValue + delta >= 1) {
+      //     quantityInput.value = currentValue + delta;
+      //   }
+      // }
+
+      const quantity = async (type, item) => {
+       
+      let quantityElement = document.getElementById(`quantity-${item.productId._id }`);
+      let totalPriceElement = document.getElementById(`total_price_${item.productId.price}`);
+      
+      
+      let quantityValue = parseInt(quantityElement.value);
+      
+     
+      if (type === 'inc' ) {
+		        if(quantityValue  < item.productId.stock){
+        quantityValue++;
+        
+		}else{
+		     Swal.fire({
+				title:'Stock Exceeded!',
+				text:'Cannot add more than available Stock',
+				icon:'warning',
+				confirmButtonText: 'OK'
+			 });
+			 return;
+		}
+    } else {
+        if (quantityValue > 1) {
+            quantityValue--;
         }
-      }
+    } quantityElement.value = quantityValue;
+    let totalPrice = quantityValue * item.productId.price;
+    totalPriceElement.innerText = `${totalPrice}`;
+    
+
+       
+
+
+  }
+
+
+
     </script>
     
   </body>
