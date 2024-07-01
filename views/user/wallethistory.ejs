@@ -66,7 +66,7 @@
                     <td>
                         <% if (wallet.type === 'refund') { %>
                             <span class="text-success">+ <%= wallet.amount %></span>
-                        <% } else if (wallet.transactionType === 'Debit') { %>
+                        <% } else if (wallet.type === 'withdrawl') { %>
                             <span class="text-danger">- <%= wallet.amount %></span>
                         <% } %>
                     </td>

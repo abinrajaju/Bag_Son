@@ -59,7 +59,7 @@ const add_category=async(req,res)=>{
         }else{
             const newCategory= new Categorydb({
                 CategoryName:req.body.CategoryName,
-                discription:req.body.discription
+                description:req.body.discription
             })
            
             await newCategory.save();
@@ -83,6 +83,7 @@ const get_edit=async(req,res)=>{
     try{
         const categoryId=req.params.id;
         const updateData=req.body
+        
         const get = await Categorydb.findById(categoryId)
         const categorysame=await Categorydb.findOne({CategoryName:updateData.CategoryName})
         if(categorysame){

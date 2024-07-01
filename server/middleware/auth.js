@@ -7,9 +7,9 @@ const dotenv = require('dotenv')
 
 dotenv.config({ path: 'config.env' })
 
-const client_secret=process.env.secret
+const client_secret=process.env.GOOGLE_secret
 
-const client_ID= process.env.client
+const client_ID= process.env.GOOGLE_client
 
 
 

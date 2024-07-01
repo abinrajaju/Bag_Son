@@ -1706,10 +1706,11 @@ th:last-child {
   background-color: #45a049;
 }
 .address11{
-	background-color: var(--green);
+	background-color: rgb(41, 124, 48);
+  color: #ffffff;
     border-radius: 4px;
-   padding-left: 20px;
-   padding-right: 20px;
+   padding-left: 10px;
+   padding-right: 10px;
    display: flex;
    margin-left: auto;
 }

@@ -5,7 +5,7 @@ const moment=require('moment')
 
 const get_order=async(req,res)=>{
     const orders = await orderdb.find().populate('items.productId').populate('userId').exec();
-   
+    orders.reverse()
     res.render('admin/order_detail',{orders,moment})
 }
 const updateStatus=async(req,res)=>{
@@ -36,10 +36,23 @@ const updateStatus=async(req,res)=>{
     }
 }
 
+const orderDetail = async (req, res) => {
 
+    try {
+        const orderId = req.params.id
+        const order = await orderdb.findById(orderId).populate('items.productId')
+       
+        res.render('admin/order_view', { order })
+
+    } catch (error) {
+        console.log(error);
+        res.redirect('/error500')
+
+    }
+}
 
 
 
 module.exports={
-    get_order,updateStatus
+    get_order,updateStatus,orderDetail
 }

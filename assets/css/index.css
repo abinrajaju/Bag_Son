@@ -1493,3 +1493,20 @@ input[type="number"] {
   padding-left: 7px;
   padding-right: 7px;
 }
+.product_details-offer-price {
+  font-size: 1.5em;
+  color: #B12704;
+  display: block;
+}
+
+.product_details-original-price {
+  font-size: 0.9em;
+  color: #888;
+  text-decoration: line-through;
+  display: block;
+}
+
+.product_details-discount {
+  font-size: 0.9em;
+  color: #B12704;
+}

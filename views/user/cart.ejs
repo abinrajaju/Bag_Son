@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Box icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />
     <!-- Custom StyleSheet -->
     <link rel="stylesheet" href="/assets/css/index.css" />
     <title>Your Cart</title>
-  </head>
-  <body>
+</head>
+<body>
     <!-- Navigation -->
     <div class="top-nav">
       
@@ -77,62 +74,58 @@
     </div>
      
     <% if (!user || user.items.length === 0) { %>
-      <div class="container cart" >
-          <div> <h1>  Your cart is empty.</h1></div>
-         
+      <div class="container cart">
+          <div> <h1>Your cart is empty.</h1></div>
       </div>
-  <% } else { %>
-    <!-- Cart Items -->
-    <div class="container cart">
-      <table>
-        <tr>
-          <th>Product</th>
-          <th>Quantity</th>
-          <th>Subtotal</th>
-        </tr>
-        <% user.items.forEach((item,index)=>{%>
+    <% } else { %>
+      <!-- Cart Items -->
+      <div class="container cart">
+        <table>
           <tr>
-            <td>
-              <div class="cart-info">       
-                <img src="<%= item.productId.images[0] %>" alt="" />
-                <div>
-                  <span><%= item.productId.product_name %></span> <br />
-                  <a href="remove/<%= item.productId._id %>">remove<i class="fa-solid fa-trash"></i></a>
-                </div>
-              </div>
-            </td>
-            <td>
-              <% if(item.productId.stock>0){ %>
-              <div class="quantity">
-                <button class="quantity-btn btn2" onclick="quantity('dec',<%= JSON.stringify(item) %>)" id="decrese">-</button>
-                <input type="number" id="quantity-<%= item.productId._id %>"  value="<%= item.quantity %>" min="1" readonly />
-                <button class="quantity-btn" onclick="quantity('inc',<%= JSON.stringify(item) %>)" data-type="plus" >+</button>
-              </div>
-            </td>
-         
-            <td id="total_price_<%=item.productId.price %>">&#8377;<%= item.productId.price %></td>
-            <%}else{ %>
-              <td>out of Stock</td>
-              <%}%>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
           </tr>
-          
-        <% }) %>
+          <% 
+         
+          user.items.forEach((item, index) => { %>
+            <tr>
+              <td>
+                <div class="cart-info">
+                  <img src="<%= item.productId.images[0] %>" alt="" />
+                  <div>
+                    <span><%= item.productId.product_name %></span> <br />
+                    <a href="remove/<%= item.productId._id %>">remove <i class="fa-solid fa-trash"></i></a>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <% if(item.productId.stock > 0) { %>
+                  <div class="quantity">
+                    <button class="quantity-btn btn2" onclick="quantity('dec', <%= JSON.stringify(item) %>)">-</button>
+                    <input type="number" id="quantity-<%= item.productId._id %>" value="<%= item.quantity %>" min="1" readonly />
+                    <button class="quantity-btn" onclick="quantity('inc', <%= JSON.stringify(item) %>)">+</button>
+                  </div>
+                <% } else { %>
+                  <p>Out of Stock</p>
+                <% } %>
+              </td>
+              <td id="total_price_<%= item.productId._id %>">&#8377;<%= item.productId.offerPrice * item.quantity %></td>
+            </tr>
+          <% }) %>
         </table>
         <div class="total-price">
           <table>
             <tr>
-              <td>total</td>
-              <td>&#8377;<%=user.totalAmount%></td>
+              <td>Total</td>
+              <td id="total_amount">&#8377;<%= user.totalAmount %></td>
             </tr>
-           
-           
           </table>
-          <a href="/checkout" class="checkout btn">Proceed To Checkout</a>
+          <p id="checkout-button" class="checkout btn" >Proceed To Checkout</p>
+
         </div>
       </div>
-   
     <% } %>
-
 
     <!-- Footer -->
     <footer class="footer">
@@ -165,56 +158,85 @@
     <script src="/assets/js/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-      // function changeQuantity(productId, delta) {
-       
-      //   const quantityInput = document.getElementById(`quantity-${productId}`);
-       
-      //   let currentValue = parseInt(quantityInput.value);
-        
-      //   if (currentValue + delta >= 1) {
-      //     quantityInput.value = currentValue + delta;
-      //   }
-      // }
+    
+      const userData = <%- JSON.stringify(user) %>;
 
       const quantity = async (type, item) => {
-       
-      let quantityElement = document.getElementById(`quantity-${item.productId._id }`);
-      let totalPriceElement = document.getElementById(`total_price_${item.productId.price}`);
-      
-      
-      let quantityValue = parseInt(quantityElement.value);
-      
-     
-      if (type === 'inc' ) {
-		        if(quantityValue  < item.productId.stock){
-        quantityValue++;
-        
-		}else{
-		     Swal.fire({
-				title:'Stock Exceeded!',
-				text:'Cannot add more than available Stock',
-				icon:'warning',
-				confirmButtonText: 'OK'
-			 });
-			 return;
-		}
-    } else {
-        if (quantityValue > 1) {
+        let quantityElement = document.getElementById(`quantity-${item.productId._id}`);
+        let totalPriceElement = document.getElementById(`total_price_${item.productId._id}`);
+        let quantityValue = parseInt(quantityElement.value);
+
+        if (type === 'inc') {
+          if (quantityValue < item.productId.stock) {
+            quantityValue++;
+          } else {
+            Swal.fire({
+              title: 'Stock Exceeded!',
+              text: 'Cannot add more than available Stock',
+              icon: 'warning',
+              confirmButtonText: 'OK'
+            });
+            return;
+          }
+        } else {
+          if (quantityValue > 1) {
             quantityValue--;
+          }
         }
-    } quantityElement.value = quantityValue;
-    let totalPrice = quantityValue * item.productId.price;
-    totalPriceElement.innerText = `${totalPrice}`;
-    
 
-       
+        quantityElement.value = quantityValue;
+        let totalPrice = quantityValue * item.productId.offerPrice;
+        totalPriceElement.innerText = `₹${totalPrice}`;
+        
+        fetch(`/up-quantity/${item.productId._id}`, {
+				method: "PUT",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ quantity:quantityValue })
+			}).then(res => res.json())
+								.then(res => { 
+                                 
+									
+									
+									if (res.message === 'changed') {
+
+                    fetch('/up-amount', {
+				             method: "POST",
+				            headers: {
+				              	'Content-Type': 'application/json'
+				                   },
+			              }).then(res => res.json())
+                    .then(res => { 
+                      if (res.message === 'update') {
+                
+										
+
+                         
+        let totalAmount = 0;
+        document.querySelectorAll('.container.cart table tr').forEach((row) => {
+          let priceElement = row.querySelector('td:nth-child(3)');
+          if (priceElement) {
+            let subtotal = parseFloat(priceElement.innerText.replace('₹', ''));
+            totalAmount += subtotal;
+          }
+        });
+        document.getElementById('total_amount').innerText = `₹${totalAmount}`;
 
 
-  }
+                      }
+      })
+			}
+		})
+ }
 
-
-
+      
+ document.getElementById('checkout-button').addEventListener('click', function() {
+  
+    window.location.href = '/checkout';
+});
     </script>
+    
     
   </body>
 </html>

@@ -75,7 +75,7 @@
                         <% orders.filter(order => order.status === 'Pending' || order.status === 'Shipped').forEach(order => { %>
                         <div class="col-md-12 mb-3">
                             <div class="card shadow">
-                                <a href="/orderDetails/<%= order._id %>" style="text-decoration: none;">
+                                <a href="/orderDetail/<%= order._id %>" style="text-decoration: none;">
                                     <div class="card-header d-flex justify-content-between align-items-center">
                                         <h5 class="card-title text-muted m-2">OrderID. <%= order.orderId %></h5>
                                         
@@ -125,7 +125,7 @@
 
                                 <div class="col-md-12 mb-3">
                                     <div class="card shadow">
-                                        <a href="/orderDetails/<%= order._id %>" style="text-decoration: none;">
+                                        <a href="/orderDetail/<%= order._id %>" style="text-decoration: none;">
                                         <div class="card-header d-flex justify-content-between align-items-center">
                                             <h5 class="card-title text-muted m-2">OrderID. <%= order.orderId %></h5>
                                             <span class="text-success">Order Delivered</span>
@@ -162,7 +162,7 @@
 
                                 <div class="col-md-12 mb-3">
                                     <div class="card shadow">
-                                        <a href="/orderDetails/<%= order._id %>" style="text-decoration: none;">
+                                        <a href="/orderDetail/<%= order._id %>" style="text-decoration: none;">
                                         <div class="card-header d-flex justify-content-between align-items-center">
                                             <h5 class="card-title text-muted m-2">OrderID. <%= order.orderId %></h5>
                                             <span class="text-success">Order Delivered</span>
@@ -197,7 +197,7 @@
                         <% orders.filter(order => order.status === 'Cancelled').forEach(order => { %>
                                 <div class="col-md-12 mb-3">
                                     <div class="card shadow">
-                                        <a href="/orderDetails/<%= order._id %>" style="text-decoration: none;"> 
+                                        <a href="/orderDetail/<%= order._id %>" style="text-decoration: none;"> 
                                         <div class="card-header d-flex justify-content-between align-items-center">
                                             <h5 class="card-title text-muted m-2">OrderID. <%= order.orderId %></h5>
                                             <span class="text-danger">Order Cancelled</span>
@@ -230,7 +230,7 @@
 
                                 <div class="col-md-12 mb-3">
                                     <div class="card shadow">
-                                        <a href="/orderDetails/<%= order._id %>" style="text-decoration: none;">
+                                        <a href="/orderDetail/<%= order._id %>" style="text-decoration: none;">
                                         <div class="card-header d-flex justify-content-between align-items-center">
                                             <h5 class="card-title text-muted m-2">OrderID. <%= order.orderId %></h5>
                                             <span class="text-danger">Order Returned, Amount Refunded</span>

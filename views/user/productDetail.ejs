@@ -63,7 +63,13 @@
       </div>
       <div class="right">
         <h1><%= product.product_name %></h1>
+        <% if (product.offerPrice && product.offerPrice < product.price) { %>
+          <h4 class="product_details-offer-price">&#8377;<%= product.offerPrice %></h4>
+              <span class="product_details-original-price">M.R.P.: &#8377;<%= product.price %></span>
+              <span class="product_details-discount">(<%= Math.round(((product.price - product.offerPrice) / product.price) * 100) %> % off)</span>
+                              <% } else { %>
         <div class="price">&#8377; <%= product.price %></div>
+        <% } %>
         <form action="/cart" method="post">
           <div>
             <!-- <select>
@@ -73,7 +79,7 @@
               <option value="XL">XL</option>
               <option value="XXL">XXL</option>
             </select> -->
-            <span><i class="bx bx-chevron-down"></i></span>
+            <!-- <span><i class="bx bx-chevron-down"></i></span> -->
           </div>
         </form>
         <form class="form">

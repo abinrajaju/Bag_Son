@@ -48,9 +48,10 @@
           <div class="icon">
             <i class="bx bx-search"></i>
           </div>
-          <div class="icon">
+          <div class="icon">a
+            <a href="/wishlisted">
             <i class="bx bx-heart"></i>
-            <span class="d-flex">0</span>
+            <span class="d-flex">0</span></a>
           </div>
           <a href="/cart" class="icon">
             <i class="bx bx-cart"></i>
@@ -67,7 +68,8 @@
           <i class="bx bx-search"></i>
         </div>
         <div class="icon">
-          <i class="bx bx-heart"></i>
+          <a href="/wishlisted">
+          <i class="bx bx-heart"></i></a>
           <!-- <span class="d-flex">0</span> -->
         </div>
         <a href="/cart" class="icon">
@@ -85,28 +87,28 @@
   <!-- All Products -->
   <section class="section all-products" id="products">
     <div class="top container">
-     
+      <form>
       <select id="shop">
-        <option name="cata" value="" selected disabled>category</option>
+        <option name="cata" value="" selected disabled>Category</option>
         <option name="cata" value="mens">MEN</option>
         <option name="cata" value="women">WOMEN</option>
         <option name="cata" value="kid">KID</option>
         </select>
-     
-      <h1>
+      </form>
+      <!-- <h1>
         
-      </h1>
-      <form>
-        <select>
-          <option value="1">Defualt Sorting</option>
-          <option value="2">Sort By Price</option>
-          <option value="3">Sort By Popularity</option>
+      </h1> -->
+     <form>
+        <select id="sort">
+          <option value=""disabled selected>Sort by</option>
+          <option value="2">Low to High</option>
+          <option value="3">High to low</option>
           <option value="4">Sort By Sale</option>
-          <option value="5">Sort By Rating</option>
+          <option value="5">Newest First</option>
         </select>
         <span><i class="bx bx-chevron-down"></i></span>
+     
       </form>
-      
     </div>
     
     <div class="product-center container">
@@ -124,8 +126,13 @@
               <h4>
                 <%= product.brand %>
               </h4>
-              <h5>&#8377 <%= product.price %>
-              </h5>
+              <% if (product.offerPrice && product.offerPrice < product.price) { %>
+                <h4 class="product_details-offer-price">&#8377;<%= product.offerPrice %></h4>
+                <span class="product_details-original-price">M.R.P.: &#8377;<%= product.price %></span>
+                <span class="product_details-discount">(<%= Math.round(((product.price - product.offerPrice) / product.price) * 100) %> % off)</span>
+                                <% } else { %>
+              <h5>&#8377 <%=product.price %></h5>
+              <% } %>
           </div>
          <ul class="icons">
               <li><i class="bx bx-heart"></i></li>
@@ -175,7 +182,7 @@
 				body: JSON.stringify({ tems: selected })
 			}).then(res => res.json())
       .then(res =>{
-        console.log('hellllllllllllllllo');
+        
         if(res==='mens'){
           window.location.href = '/mens'
         
@@ -192,6 +199,22 @@
 
         });
   </script>
+  <script> document.getElementById('sort').addEventListener('change', function() {
+    const selected = this.value;
+    console.log(selected);
+    fetch("/productsort", {
+    method: "POST",
+     headers: {
+     'Content-Type': 'application/json'
+    },
+     body: JSON.stringify({ selsect: selected })
+     })
+
+
+
+
+  })
+</script>
 </body>
 
 </html>

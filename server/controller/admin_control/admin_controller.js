@@ -1,7 +1,10 @@
 const jwt=require('jsonwebtoken')
 const userdb=require('../../model/usermodel')
-
-
+const productdb=require('../../model/product')
+const offerdb=require('../../model/offermodel')
+const categorydb = require('../../model/category')
+const wishlistdb=require('../../model/wishlistmodel')
+const cartdb=require('../../model/cartmodel')
 
 const err=async(req,res)=>{
   res.render('admin/err500')
@@ -89,9 +92,92 @@ const adminlogout=async(req,res)=>{
 
 
 
+//index
+const applyoffer = async (product) => {
+    if (!product) {
+        return null;
+    }
+
+    try {
+        const productOffer = await offerdb.findOne({
+            product_name: product._id,
+            status: 'active'
+        });
+       
+
+        const categoryOffer = await offerdb.findOne({
+            category_name: product.Category._id, // Ensure this matches the field used in product's schema
+            status: 'active'
+        });
+
+        if (productOffer && typeof productOffer.discount_Percentage === 'number') {
+            product.offerPrice = Math.round(product.price - (product.price * (productOffer.discount_Percentage / 100)));
+            console.log("Applied product offer");
+        } else if (categoryOffer && typeof categoryOffer.discount_Percentage === 'number') {
+            product.offerPrice = Math.round(product.price - (product.price * (categoryOffer.discount_Percentage / 100)));
+            console.log("Applied category offer");
+        } else {
+            product.offerPrice = product.price;
+            console.log("No offers applied");
+        }
+    } catch (error) {
+        console.error('Error applying offer:', error);
+    }
+
+    return product;
+    
+};
+
+
+
+
+
+const index = async (req, res) => {
+    try {
+
+
+
+        let user = null;
+        let cartCount = 0;
+        let wishlist = null;
+        const products = await productdb.find().populate('Category');
+        const categoryId = req.query.id
+        const Category = await categorydb.find();
+
+        for (const product of products) {
+            await applyoffer(product);
+        }
+          
+       
+        if (req.cookies.userToken) {
+            user = await userdb.findOne({ email: req.session.email });
+            const userId = user._id;
+
+            const cart = await cartdb.findOne({ user: userId });
+            cartCount = cart ? cart.items.length : 0;
+            wishlist = await wishlistdb.findOne({ user: userId });
+            if (user && user.status === "block") {
+                res.redirect('/block')
+        
+              } else{
+
+      
+            res.render('user/index', { products, userToken: req.cookies.userToken, cartCount, user, wishlist, Category });
+            }
+        } else {
+            res.render('user/index', { products, userToken: undefined, cartCount: 0, wishlist: 0, Category, categoryId });
+        }
+
+
+
+    } catch (error) {
+        console.error('Error rendering index page:', error);
+      res.redirect('/error500')
+    }
+};
 
 module.exports={
-    adminlogin,adminsign,admindash,adminlogout,err,block
+    adminlogin,adminsign,admindash,adminlogout,err,block,index
  }
 
 

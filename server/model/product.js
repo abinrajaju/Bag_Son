@@ -38,7 +38,10 @@ let productsschema = new mongoose.Schema({
     },
     images: {
         type: [String]
-    }
+    },
+    offerPrice: {
+        type: Number,
+    },
 });
 
 const productdb = mongoose.model('product', productsschema);

@@ -5,7 +5,9 @@ const nodemailer = require('nodemailer')
 const jwt = require('jsonwebtoken')
 const cartdb=require('../../model/cartmodel')
 const wishlistdb=require('../../model/wishlistmodel')
-
+const dotenv = require('dotenv')
+dotenv.config({ path: 'config.env' })
+const offerdb=require('../../model/offermodel')
 
 
 
@@ -13,8 +15,8 @@ const wishlistdb=require('../../model/wishlistmodel')
 const createTransporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-    user: 'abinraj1090@gmail.com',
-    pass: 'qent njzg hrfu njtm',
+    user: process.env.googleEmail,
+    pass: process.env.googlePassword,
   },
 });
 
@@ -115,7 +117,7 @@ const index = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.redirect('/err500')
+    res.redirect('/error500')
   }
 
 }
@@ -155,12 +157,12 @@ const signup = async (req, res) => {
       subject: 'your OTP verification',
       text: `your OTP is ${otp}`
     }, (err, info) => {
-      console.log("hi");                                                            
+                                                               
       if (err) {
         console.log('Error sending email', err);
         res.render('user/user_signup', { message: 'Error sending OTP via email' })
       } else {
-        console.log("keriyo");
+        
 
 
         console.log('OTP sent Succesfully', info.response);
@@ -270,12 +272,54 @@ const block = async (req, res) => {
   res.render('user/block')
 }
 
+const applyoffer = async (product) => {
+  if (!product) {
+      return null;
+  }
+
+  try {
+      const productOffer = await offerdb.findOne({
+          product_name: product._id,
+          status: 'active'
+      });
+     
+
+      const categoryOffer = await offerdb.findOne({
+          category_name: product.Category._id, // Ensure this matches the field used in product's schema
+          status: 'active'
+      });
+
+      if (productOffer && typeof productOffer.discount_Percentage === 'number') {
+          product.offerPrice = Math.round(product.price - (product.price * (productOffer.discount_Percentage / 100)));
+          console.log("Applied product offer");
+      } else if (categoryOffer && typeof categoryOffer.discount_Percentage === 'number') {
+          product.offerPrice = Math.round(product.price - (product.price * (categoryOffer.discount_Percentage / 100)));
+          console.log("Applied category offer");
+      } else {
+          product.offerPrice = product.price;
+          console.log("No offers applied");
+      }
+  } catch (error) {
+      console.error('Error applying offer:', error);
+  }
+
+  return product;
+  
+};
+
+
+
+
 
 const productDetail = async (req, res) => {
 
-
+            
   const products = await productdb.find()
-  const product = await productdb.findById(req.query.id)
+  
+  const product = await productdb.findById(req.query.id).populate('Category')
+  
+  
+    await applyoffer(product);
 
 
   res.render('user/productDetail', { product, products })
@@ -331,7 +375,7 @@ const post_forgot=async(req,res)=>{
 
   }catch(err){
     console.log(err);
-    redirect('/err500')
+    res.redirect('/err500')
   }
 
 

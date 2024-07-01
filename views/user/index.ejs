@@ -136,7 +136,13 @@
           </div>
           <div class="product-info">
             <span><a href="/productdetail?id=<%=product._id  %>"><%=product.product_name %></a></span>
+            <% if (product.offerPrice && product.offerPrice < product.price) { %>
+              <h4 class="product_details-offer-price">&#8377;<%= product.offerPrice %></h4>
+              <span class="product_details-original-price">M.R.P.: &#8377;<%= product.price %></span>
+              <span class="product_details-discount">(<%= Math.round(((product.price - product.offerPrice) / product.price) * 100) %> % off)</span>
+                              <% } else { %>
             <h5>&#8377 <%=product.price %></h5>
+            <% } %>
             <h4><%=product.brand %></h4>
           </div>
           <ul class="icons">

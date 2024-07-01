@@ -21,7 +21,7 @@ const profile=async(req,res)=>{
     res.render('user/profile',{user,userToken,wallet})
    }catch(err){
     console.log(err);
-    redirect('/err500')
+    redirect('/error500')
 }
 }
 
@@ -36,7 +36,7 @@ const address=async(req,res)=>{
     res.render('user/address',{user,addresses})
     }catch(err){
         console.log(err);
-        redirect('/err500')
+        redirect('/error500')
     }
 }
 
@@ -46,10 +46,10 @@ const userorders= async(req,res)=>{
         const user= await userdb.findOne({email:req.session.email})
         const orders= await orderdb.find({userId:user._id})
         orders.reverse()
-        res.render('user/oderdetail',{user,orders})
+        res.render('user/oders',{user,orders})
     }catch(err){
         console.log(err);
-        redirect('/err500')
+        redirect('/error500')
     }
 }
 
@@ -68,7 +68,7 @@ const wishlisted=async(req,res)=>{
        }
     }catch(err){
         console.log(err);
-       res.redirect('/err500')
+       res.redirect('/error500')
     }
 }
 
@@ -170,7 +170,7 @@ const add_address=async(req,res)=>{
         res.redirect('/useraddress')
     }catch(err){
         console.log(err);
-        res.redirect('error500')
+        res.redirect('/error500')
     }
     }
 
@@ -202,14 +202,11 @@ const cancelOrder=async(req,res)=>{
     
         const orderId = req.params.orderId;
         const reason = req.query.reason || "No reason provided";
-    
-    
-    
-        const userEmail = req.session.email
-        console.log(userEmail, "user");
-        const user = await userdb.findOne({ email: userEmail })
+
+        const user = await userdb.findOne({ email: req.session.email })
         const userId = user._id;
-        console.log('userId', userId);
+        const order=await orderdb.findOne({_id:orderId})
+        const total=order.totalAmount
     
         const wallet = await walletdb.findOne({ user: userId })
         const updateOrder = await orderdb.findByIdAndUpdate(orderId, {
@@ -226,15 +223,15 @@ const cancelOrder=async(req,res)=>{
         for (const item of updateOrder.items) {
           await productdb.findByIdAndUpdate(item.productId, {
             $inc: { stock: item.quantity },
-          });
-    
-          const refundAmount = item.price * item.quantity;
-          totalRefund += refundAmount;
+          });}
+          
+            if(order.paymentMethod!='cod'){
+          
           if (!wallet) {
             const wallett = new walletdb({
               user: user,
-              balance: refundAmount,
-              transactions: { type: 'refund', amount: refundAmount, description: `Order Returned for item ${item.productname}` }
+              balance: total,
+              transactions: { type: 'refund', amount: total, description: `Order Returned for item ` }
     
             })
             wallett.save()
@@ -243,13 +240,13 @@ const cancelOrder=async(req,res)=>{
             updatedWallet = await walletdb.findOneAndUpdate(
               { user: userId },
               {
-                $inc: { balance: refundAmount },
-                $push: { transactions: { type: 'refund', amount: refundAmount, description: `Order cancelled for item ${item.productname}` } }
+                $inc: { balance: total },
+                $push: { transactions: { type: 'refund', amount: total, description: `Order cancelled for item ` } }
               },
               { upsert: true, new: true }
             );
           }
-        }
+            }
     
         res.json({
           success: true,
@@ -274,6 +271,22 @@ const getwallet=async(req,res)=>{
 
     }catch(err){
         console.log(err);
+        res.redirect('/error500')
+    }
+}
+
+
+const orderDetail=async(req,res)=>{
+    try {
+        const oderid=req.params.id
+        const user= await userdb.findOne({email:req.session.email})
+        const wallet= await walletdb.findOne({user:user})
+        const order = await orderdb.findById(oderid).populate('items.productId')
+        console.log(order);
+        res.render('user/oder_detail',{walletHistory:wallet,user,order})
+    } catch (error) {
+        console.log(error);
+        res.redirect('/error500')
     }
 }
 
@@ -281,6 +294,10 @@ const getwallet=async(req,res)=>{
 
 
 
+
 module.exports={
-    profile,address,userorders,wishlisted,add_wishlist,remove_wishlist,get_address,add_address,delete_address,cancelOrder,getwallet
+    profile,address,userorders,wishlisted,add_wishlist,remove_wishlist,get_address,add_address,delete_address,cancelOrder,
+    getwallet,orderDetail
+
+
 }

@@ -20,7 +20,7 @@
   <!-- Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <!-- CSS Files -->
-  <link id="pagestyle" href="/assets/css/category.css" rel="stylesheet" />
+  <link id="pagestyle" href="/assets/css/material-dashboard.min.css" rel="stylesheet" />
   <!-- DataTable -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css" />
@@ -32,16 +32,42 @@
   <!-- Nepcha Analytics (nepcha.com) -->
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
   <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+  <style>
+    .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
 
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+  </style>
 </head>
 
 <body class="g-sidenav-show  bg-gray-200 overflow-x-hidden">
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl sticky-top" id="navbarBlur" data-scroll="true">
       <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
-          <a class="navbar-brand fw-bolder" href="/admin">BAGSON</a>
+          <a class="navbar-brand fw-bolder" href="#">BRODWAY</a>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           <ul class="navbar-nav  justify-content-end">
@@ -58,12 +84,13 @@
         </div>
       </div>
     </nav>
-    <!-- End Navbar -->
+
+
 
     <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3  mt-5 bg-gradient-dark" id="sidenav-main">
         <div class="sidenav-header">
           <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-          <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
+          <a class="navbar-brand m-0">
             <span class="ms-1 font-weight-bold text-white">Admin</span>
           </a>
         </div>
@@ -79,7 +106,7 @@
               </a>
             </li> 
             <li class="nav-item">
-              <a class="nav-link text-white " href="/category">
+              <a class="nav-link text-white" href="/category">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="material-icons opacity-10">assignment</i>
                 </div>
@@ -87,7 +114,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white active bg-gradient-primary" href="/products">
+              <a class="nav-link text-white " href="/products">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="material-icons opacity-10">table_view</i>
                 </div>
@@ -111,24 +138,32 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white" href="/coupons">
+              <a class="nav-link text-white" href="/coupon  ">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="material-icons opacity-10">redeem</i> 
+                  <i class="material-icons opacity-10">redeem</i> <!-- Material icon for a coupon -->
                 </div>
                 <span class="nav-link-text ms-1">Coupons</span>
               </a>
             </li>  
-            <li class="nav-item">
-              <a class="nav-link text-white" href="/offers">
-                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="material-icons opacity-10">local_offer</i> <!-- Material icon for a coupon -->
-                </div>
-                <span class="nav-link-text ms-1">Offers</span>
-              </a>
-            </li> 
             <li class="nav-item mt-3">
               <hr class="dark horizontal my-0">
             </li>
+              <li class="nav-item">
+              <a class="nav-link text-white active bg-gradient-primary" href="/offers">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="material-icons opacity-10">local_offer</i>
+                </div>
+                <span class="nav-link-text ms-1">Offer</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white  " href="/getSalesReport">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                      <i class="material-icons opacity-10">login</i>
+                  </div>
+                  <span class="nav-link-text ms-1">Sales Report</span>
+              </a>
+          </li>
             <hr class="light horizontal my-0">
             <li class="nav-item">
               <a class="nav-link text-white " href="/adminlogout">
@@ -142,135 +177,95 @@
         </div>
       </aside>
 
+      <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#" class="text-black">Admin</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Offers</li>
+          </ol>
+      </nav>
 
-        <!-- List of users -->
-  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="#" class="text-black">Admin</a></li>
-          <li class="breadcrumb-item"><a href="/allproducts" class="text-black">Products</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Add products</li>
-      </ol>
-  </nav>
-  <label class="text-danger"></label>
-  <div class="container-fluid py-4">
-    <div class="productside">
-      <div class="row">
-        <div class="col-6"><h2 class="me-3 text-decoration-underline">Add products</h2></div>
-        <!-- <div class="col-6"> <a href="/admin/addproduct" class="bg-dark btn border-shadow shadow update">
-          <span class="text-white">Add Products <b>+</b></span>
-      </a></div> -->
-      </div>
-    
-      <div class="row">
-        <div class="col-12 col-lg-6 card mb-10 rounded bg-black">
-          <form action="/multproduct" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
-            <div class="mb-3">
-              <label for="p_name" class="form-label">Product Name:</label>
-              <input type="text" class="form-control" id="p_name" name="product_name"  required>
-              <span id="nameError" class="error" style="color:red"></span>
-            </div>
-         
+      <div class="container-fluid py-4">
+        <div class="userside">
+          <div class="row">
+            <div class="col-10"><h2 class="me-3 text-decoration-underline">All Offers</h2></div>
+            <div class="col-2"> <a href="/addOffer" class="bg-dark btn border-shadow shadow update">
+              <span class="text-white">Add Offers <b>+</b></span>
+          </a></div>
+          <form action="/" method="POST">
+            <table class="table" id="userTable">
+                <thead class="thead-dark">
+                    <tr class="bg-dark text-light">
+                        <th>ID</th>
+                        <th>Offer Name</th>
+                        <th>Product Name</th>
+                        <th>Category Name</th>
+                        <th>Discount Percentage</th>
+                        <th>Starting Date</th>
+                        <th>Expiry Date</th>
+                        <th>Listing</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% offers.forEach((offer, index) => { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= offer.offerName %></td>
+                            <td>
+                                <% if (offer.product_name) { %>
+                                    <%= offer.product_name.product_name %>
+                                <% } else { %>
+                                 
+                                        <span class="tooltiptext">N/A</span>
+                                    </div>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (offer.category_name) { %>
+                                    <%= offer.category_name.CategoryName %>
+                                <% } else { %>
+                                    <!-- <div class="tooltip">N/A -->
+                                        <span class="tooltiptext">N/A</span>
+                                    </div>
+                                <% } %>
+                            </td>
+                            <td><%= offer.discount_Percentage %></td>
+                            <td><%= new Date(offer.startingDate).toLocaleDateString() %></td>
+                            <td><%= new Date(offer.expiryDate).toLocaleDateString()%></td>
+                            <td id="offerlist">
+                              <% if( offer.status ==='active'){ %>
+                                <span class="text-success"><%= offer.status %></span>
+                                <% } else if(offer.status==='blocked'){%>
+                                <span class="text-danger"><%= offer.status %></span>
+                               <% } %>
+                               </td>
+                            <td>
+                                <div>
+                                    <a href="/offeredit/<%= offers._id %>" class="btn btn-primary">
+                                        <span class="material-symbol-outlined">edit</span>
+                                    </a>
+                                    <a href="/offerlist?id=<%=offer._id%>" class="btn border-shadow shadow visible" >
+                                        <span class="material-symbols-outlined"></span>
+                                        <i class="fas fa-list"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </form>     
+ 
+  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+
       
-    
-            <div class="mb-3">
-              <label for="category" class="form-label">Category:</label>
-             <select  class="form-control" name="Category" id="category">
-                <option value="">select a category</option>
-                <% categories.forEach(category=>{ %>
-                    <option value="<%= category._id %>"><%= category.CategoryName %></option>
-                <% }) %>
-             </select>
-            </div>
-
-  
-           
-          <div class="mb-3">
-            <label for="stat" class="form-label">size:</label>
-            <input type="text" class="form-control" id="size" name="size" required>
-            
-        </div>
-          <div class="mb-3">
-              <label for="stat" class="form-label">Brand:</label>
-              <input type="text" class="form-control" id="brand" name="brand" required>
-          </div>
-          <div class="mb-3">
-            <label for="stat" class="form-label">color:</label>
-            <input type="text" class="form-control" id="color" name="color" required>
-        </div>
-        <div class="mb-3">
-          <label for="stat" class="form-label">price:</label>
-          <input type="number" min="1" class="form-control" id="price" name="price" required>
-          <span id="priceError" class="error" style="color:red"></span>
-      </div>
-      <div class="mb-3">
-        <label for="stat" class="form-label">Discount:</label>
-        <input type="number" class="form-control" id="discount" name="discount" required>
-    </div>
-    <div class="mb-3">
-      <label for="stat" class="form-label">stock:</label>
-      <input type="number" class="form-control" id="stock" name="stock" required>
-      <span id="stockError" class="error" style="color:red"></span>
-  </div>
- 
-  <div class="mb-3">
-    <label for="images" class="form-label">Images</label><br>
-    <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple required>
-    <div id="imagePreview" class="mt-2"></div>
-</div>
-
- 
-  <div class="mb-3">
-    <label for="stat" class="form-label">Description:</label>
-    <textarea class="form-control" id="stat" name="stat"></textarea>
-</div>
-<button type="submit" class="btn btn-primary">Submit</button>
-
-           
-      </form>
-    </div>
-      </div>
-    
-     
-    </div>
-  </div>
-</main>
-
-<script>
-    new DataTable('#userTable');
-  
-  </script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var image = document.getElementById('images');
-        var cropper = new Cropper(image, {
-            aspectRatio: 1, 
-            viewMode: 2,
-            autoCropArea: 1,
-            crop: function(event) {
-                console.log(event.detail.x);
-                console.log(event.detail.y);
-                console.log(event.detail.width);
-                console.log(event.detail.height);
-                console.log(event.detail.rotate);
-                console.log(event.detail.scaleX);
-                console.log(event.detail.scaleY);
-            }
-        });
-    });
-</script>
-
-
-
-
-
-
-
-
-
-
-
-    <!--   Core JS Files   -->
+<!--   Core JS Files   -->
 <script src="/js/popper.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/perfect-scrollbar.min.js"></script>
@@ -296,8 +291,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
 
-<!-- <script>
+<script>
   function validateForm() {
         const inputs = document.querySelectorAll('input[type="text"], textarea');
 
@@ -319,54 +315,7 @@
 
         return true;
     }
-</script>  -->
-
-
-<script>
-  function validateForm() {
-    var productName = document.getElementById('p_name').value.trim();
-    var category = document.getElementById('category').value.trim();
-    var size = document.getElementById('size').value.trim();
-    var brand = document.getElementById('brand').value.trim();
-    var color = document.getElementById('color').value.trim();
-    var price = document.getElementById('price').value.trim();
-    var discount = document.getElementById('discount').value.trim();
-    var stock = document.getElementById('stock').value.trim();
-    var images = document.getElementById('images').files;
-    var description = document.getElementById('stat').value.trim();
-
-    var isValid = true;
-
-    // Product Name validation
-    if (productName === "") {
-      document.getElementById('nameError').textContent = "Product Name is required";
-      isValid = false;
-    } else {
-      document.getElementById('nameError').textContent = "";
-    }
-    
-
-    // Category validation
-    if (category === "") {
-      // You can customize the error message and behavior as needed
-      alert("Please select a category");
-      isValid = false;
-    }
-
-    // Size, Brand, Color, Price, Discount, Stock, Description validation
-    // You can add similar validation for these fields as needed
-
-    // Images validation
-    if (images.length === 0) {
-      // You can customize the error message and behavior as needed
-      alert("Please select at least one image");
-      isValid = false;
-    }
-
-    return isValid;
-  }
 </script>
-
 
 </body>
 
