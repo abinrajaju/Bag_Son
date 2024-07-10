@@ -121,6 +121,7 @@ const shopeCata=async(req,res)=>{
 const sort_product=async(req,res)=>{
     try {
         const userEmail = req.session.email
+        console.log(userEmail);
         const { sortBySelect } = req.body;
         console.log(sortBySelect);
     } catch (error) {
