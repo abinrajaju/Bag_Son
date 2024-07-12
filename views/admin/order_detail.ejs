@@ -259,7 +259,7 @@
                     if (newStatus === 'Delivered') {
                         newPaymentStatus = 'Paid';
                     }
-                console.log("secnd iam here ");
+                
                     fetch(`/updateOrderStatus/${orderId}`, {
                         method: 'POST',
                         headers: {
@@ -290,6 +290,7 @@
                                 message = 'Return request rejected';
                                 break;
                             case 'Return Accepted':
+                            
                                 message = 'Return request accepted';
                                 break;
                             case 'Cancelled':
@@ -298,6 +299,30 @@
                             default:
                                 message = 'Order status updated';
                         }
+                        if( message == 'Return request accepted'){
+                          console.log("corrected");
+                            fetch(`/up-return/${orderId}`,{
+                              method:'POST',
+                              headers: {
+                            'Content-Type': 'application/json'
+                        }
+                            })
+                            .then(res=>{
+                              Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: message,
+                        });
+
+                            })
+                        }else{
+                          Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to update status',
+                        });
+                        }
+                        
                         Swal.fire({
                             icon: 'success',
                             title: 'Success',

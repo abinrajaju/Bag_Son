@@ -32,24 +32,10 @@
             <li class="nav-item">
               <a href="#contact" class="nav-link">Contact</a>
             </li>
-            <li class="icons d-flex">
-            <a href="/profile" class="icon">
-              <i class="bx bx-user"></i>
-            </a>
-            <div class="icon">
-              <i class="bx bx-search"></i>
-            </div>
-           <a href="/wishlisted"> <div class="icon">
-              <i class="bx bx-heart"></i>
-              <span class="d-flex">0</span>
-            </div></a>
-            <a href="/cart" class="icon">
-              <i class="bx bx-cart"></i>
-              <span class="d-flex"></span>
-            </a>
-          
-          </li>
+            
           </ul>
+          <!-- search bar -->
+          
                      
           <div class="icons d-flex">
             <a href="/profile" class="icon">
@@ -58,18 +44,20 @@
             <div class="icon">
               <i class="bx bx-search"></i>
             </div>
+            
           <a href="/wishlisted"> <div class="icon">
               <i class="bx bx-heart"></i>
-              <!-- <span class="d-flex">0</span> -->
+              <span class="d-flex"><%=wishCount %></span>
             </div></a>
             <a href="/cart" class="icon">
               <i class="bx bx-cart"></i>
-              <!-- <span class="d-flex">0</span> -->
+              <span class="d-flex"><%=cartCount%></span>
             </a>
             <% if (userToken) { %>
             <a href="/userlogout"><i class="ion-log-in"></i> Logout  </a>
           </div>
                 <% } %>
+                
           <div class="hamburger">
             <i class="bx bx-menu-alt-left"></i>
           </div>
@@ -127,7 +115,7 @@
       </div>
 
       <div class="product-center">
-        <% products.forEach(product=>{%>
+        <% Newproducts.forEach(product=>{%>
         <div class="product-item">
           <div class="overlay">
             <a href="productdetail?id=<%=product._id %>" class="product-thumb">
@@ -137,11 +125,13 @@
           <div class="product-info">
             <span><a href="/productdetail?id=<%=product._id  %>"><%=product.product_name %></a></span>
             <% if (product.offerPrice && product.offerPrice < product.price) { %>
-              <h4 class="product_details-offer-price">&#8377;<%= product.offerPrice %></h4>
+              <h4 class="product_details-offer-priceee">&#8377;<%= product.offerPrice %></h4>
               <span class="product_details-original-price">M.R.P.: &#8377;<%= product.price %></span>
               <span class="product_details-discount">(<%= Math.round(((product.price - product.offerPrice) / product.price) * 100) %> % off)</span>
                               <% } else { %>
-            <h5>&#8377 <%=product.price %></h5>
+                                <h4 class="product_details-offer-price">&#8377;<%= product.price - product.discount %></h4>
+            <h5><span class="product_details-original-price">M.R.P.: &#8377;<%= product.price %></span>
+              <span class="product_details-discount">(<%= Math.round((product.discount / product.price) * 100) %>% discount)</span></h5>
             <% } %>
             <h4><%=product.brand %></h4>
           </div>
@@ -188,30 +178,38 @@
 
       <div class="product-center">
         <% products.forEach(product=>{%>
-          <div class="product-item ">
-            <div class="overlay " >
-              <a href="productdetail?id=<%=product._id %>" class="product-thumb">
-                <img src="<%=product.images[0] %>" alt="" />
-              </a>
-            </div>
-            <div class="product-info">
-              <span><a href="/productdetail?id=<%=product._id  %>"><%=product.product_name %></a></span>
-              <h5>&#8377 <%=product.price %></h5>
-              <h4><%=product.brand %></h4>
-            </div>
-            <ul class="icons">
-              <% if (wishlist && wishlist.items.some(items=>items.productId.toString()===product._id.toString())) { %>
-                <li style="background-color: brown;"> <a href="/wishlisted"><i class="bx bx-heart"></i></a></li>
-                <% } else { %>
-                  <li><a href="wishlist/<%=product._id %>"><i class="bx bx-heart"></i></a></li>
-                  <% } %>
-              <li><a href="/productdetail?id=<%=product._id  %>"><i class="bx bx-search"></i></a></li>
-              <li><a href="cart/<%=product._id %>"><i class="bx bx-cart"></i></a></li>
-            </ul>
+        <div class="product-item">
+          <div class="overlay">
+            <a href="productdetail?id=<%=product._id %>" class="product-thumb">
+              <img src="<%=product.images[0] %>" alt="" />
+            </a>
           </div>
-          <%}) %>
-          
+          <div class="product-info">
+            <span><a href="/productdetail?id=<%=product._id  %>"><%=product.product_name %></a></span>
+            <% if (product.offerPrice && product.offerPrice < product.price) { %>
+              <h4 class="product_details-offer-priceee">&#8377;<%= product.offerPrice %></h4>
+              <span class="product_details-original-price">M.R.P.: &#8377;<%= product.price %></span>
+              <span class="product_details-discount">(<%= Math.round(((product.price - product.offerPrice) / product.price) * 100) %> % off)</span>
+                              <% } else { %>
+                                <h4 class="product_details-offer-price">&#8377;<%= product.price - product.discount %></h4>
+            <h5><span class="product_details-original-price">M.R.P.: &#8377;<%= product.price %></span>
+              <span class="product_details-discount">(<%= Math.round((product.discount / product.price) * 100) %>% discount)</span></h5>
+            <% } %>
+            <h4><%=product.brand %></h4>
+          </div>
+          <ul class="icons">
+            <% if (wishlist && wishlist.items.some(items=>items.productId.toString()===product._id.toString())) { %>
+            <li style="background-color: brown;"><i class="bx bx-heart"></i></li>
+            <% } else { %>
+              <li ><i class="bx bx-heart"></i></li>
+              <% } %>
+            <li><a href="/productdetail?id=<%=product._id  %>"><i class="bx bx-search"></i></a></li>
+            <li><a href="cart/<%=product._id %>"><i class="bx bx-cart"></i></a></li>
+          </ul>
         </div>
+        <%}) %>
+       
+      </div>
     </section>
 
     <!-- Contact -->
@@ -292,4 +290,5 @@
   
   <script src="/assets/js/index.js"></script>
   <script src="/assets/js/slider.js"></script>
+  
 </html>

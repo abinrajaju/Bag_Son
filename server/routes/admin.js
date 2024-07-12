@@ -51,6 +51,7 @@ route.delete('/delete-image/:productId/:imageIndex',check.adminCheck,productCont
 route.get('/orders',check.adminCheck,orderController.get_order)
 route.post('/updateOrderStatus/:orderId',check.adminCheck,orderController.updateStatus)
 route.get('/orderDetails/:id',check.adminCheck,orderController.orderDetail)
+route.post('/up-return/:id',check.adminCheck,orderController.updateReturn)
 
 //coupon
 route.get('/coupon',check.adminCheck,coupon.get_coupon)

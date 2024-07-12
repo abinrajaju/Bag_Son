@@ -139,33 +139,50 @@ const index = async (req, res) => {
 
         let user = null;
         let cartCount = 0;
-        let wishlist = null;
-        const products = await productdb.find().populate('Category');
+       
+        let wishlist=null;
+       
+        const products = await productdb.find({list:'listed'}).sort({ price: -1 }).limit(4).populate('Category');
+        const Newproducts = await productdb.find({list:'listed'}).sort({ _id: -1 }).limit(8).populate("Category");
         const categoryId = req.query.id
         const Category = await categorydb.find();
 
         for (const product of products) {
             await applyoffer(product);
+            await applyoffer(Newproducts);
+        }
+        for (const Newproduct of Newproducts) {
+           
+            await applyoffer(Newproduct);
         }
           
        
         if (req.cookies.userToken) {
             user = await userdb.findOne({ email: req.session.email });
-            const userId = user._id;
-
+            
+            if(!user){
+                req.session.email = null
+                req.session= null;
+                res.clearCookie('userToken');
+                res.redirect('/')
+            }
+            const userId = user._id; 
+            
+        
             const cart = await cartdb.findOne({ user: userId });
             cartCount = cart ? cart.items.length : 0;
             wishlist = await wishlistdb.findOne({ user: userId });
+            let wishCount = wishlist ? wishlist.items.length: 0;
             if (user && user.status === "block") {
                 res.redirect('/block')
         
               } else{
 
       
-            res.render('user/index', { products, userToken: req.cookies.userToken, cartCount, user, wishlist, Category });
+            res.render('user/index', { products, userToken: req.cookies.userToken, cartCount, user, wishlist,wishCount, Category,Newproducts  });
             }
         } else {
-            res.render('user/index', { products, userToken: undefined, cartCount: 0, wishlist: 0, Category, categoryId });
+            res.render('user/index', { products, userToken: undefined, cartCount: 0, wishlist: 0, Category, categoryId, wishCount:0,Newproducts  });
         }
 
 

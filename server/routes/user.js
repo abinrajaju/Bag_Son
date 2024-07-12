@@ -26,9 +26,12 @@ route.get('/mens',check.active,product.men)
 route.get('/block',check.active,controller.block)
 route.get('/women',check.active,product.women)
 route.get('/kid',check.active,product.kid)
-route.get('/prod',check.active,product.allproduct)
-route.post('/shop',check.active,product.shopeCata)
-route.post('/product-sort',check.active,product.sort_product)
+route.get('/prod',product.allproduct)
+route.post('/shop',product.shopeCata)
+route.post('/productsort',product.sort_product)
+route.post('/outsort',product.Catasort)
+route.post('/allshop',product.nocata)
+route.post('/search',product.search)
 
 
 
@@ -48,10 +51,10 @@ route.delete('/useraddress/:id',check.active,profile.delete_address)
 route.get('/cancelOrder/:orderId',check.active,profile.cancelOrder)
 route.get('/wallethistory',check.active,profile.getwallet)
 route.get('/orderDetail/:id',check.active,profile.orderDetail)
-
+route.get('/returnOrder/:id',check.active,profile.retur)
 //cart
-route.get('/cart',check.active,cart.get_cart)
-route.get('/cart/:id',check.active,cart.add_cart)
+route.get('/cart',check.checklog,cart.get_cart)
+route.get('/cart/:id',check.checklog,cart.add_cart)
 route.get('/remove/:id',check.active,cart.remove)
 route.put('/up-quantity/:id',check.active,cart.update_quandity)
 route.post('/up-amount',check.active,cart.update_amount)
@@ -76,5 +79,8 @@ route.post('/razorpayment',check.active,checkout.onlinepayment)
 route.post('/onlinepayment',check.active,checkout.onlinepayed)
 route.post('/walletpay',check.active,checkout.walletpay)
 route.post('/applyCoupon',check.active,checkout.apply_coupon)
+route.all('*',(req,res,next)=>{
+    res.redirect('/error500')
+})
 
 module.exports=route

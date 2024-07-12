@@ -3,7 +3,7 @@ const cartdb=require('../../model/cartmodel')
 const userdb =require('../../model/usermodel')
 const offerdb=require('../../model/offermodel')
 const categorydb = require('../../model/category')
-
+const wishlistdb=require('../../model/wishlistmodel')
 
 
 const applyoffer = async (product) => {
@@ -53,17 +53,17 @@ const get_cart=async(req,res)=>{
        
        const userid = user._id
        
-       
+       const wishlist= await wishlistdb.findOne({user:userid})
       const usercart=await cartdb.findOne({user:userid}).populate('items.productId')
       let totalAmount = 0;
-      
+     let wishCount =wishlist ? wishlist.items.length : 0;
 
      
       let totalDiscount=0;
       let totalPrice=0
      
       if(!usercart){
-        return res.render('user/cart',{user :null})
+        return res.render('user/cart',{user :null,wishCount:0})
 
       } else {
         for (let item of usercart.items) {
@@ -97,7 +97,7 @@ const get_cart=async(req,res)=>{
     }
            
      
-    res.render('user/cart', { user:usercart})
+    res.render('user/cart', { user:usercart,wishCount})
 
     }catch(err){
         console.log(err);
@@ -131,7 +131,7 @@ const add_cart=async(req,res)=>{
                return res.redirect('/cart')
             } else {
 
-                userCart.items.push({ productId: productId, quantity: 1 });
+                userCart.items.push({ productId:productId, quantity: 1 });
                 
             }
         }

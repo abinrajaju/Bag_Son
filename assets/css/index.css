@@ -72,12 +72,12 @@ Header
   background-color: rgb(0, 0, 0);
   font-size: 1.3rem;
   color: var(--white);
-  padding-top: 10px;
+  
 }
 
 .top-nav div {
   justify-content: space-between;
-  height: 4.5rem;
+  
 }
 
 .top-nav a {
@@ -347,7 +347,7 @@ Hero Media Query
 
 /* Category Section */
 .section {
-  padding: 10rem 0 5rem 0;
+  padding: 5rem 0 5rem 0;
   overflow: hidden;
 }
 
@@ -1493,9 +1493,14 @@ input[type="number"] {
   padding-left: 7px;
   padding-right: 7px;
 }
-.product_details-offer-price {
+.product_details-offer-priceee {
   font-size: 1.5em;
   color: #B12704;
+  display: block;
+}
+.product_details-offer-price{
+  font-size: 1.5em;
+  color: #000000;
   display: block;
 }
 

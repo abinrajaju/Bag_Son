@@ -52,7 +52,58 @@ const orderDetail = async (req, res) => {
 }
 
 
+const updateReturn= async(req,res)=>{
+
+    try {
+     
+     const oder= await orderdb.findById(req.params.id)
+     const user = await userdb.findById(oder.userId)
+     const wallet = await walletdb.findOne({ user: oder.userId })
+        
+     let totalRefund = 0;
+      let updatedWallet;
+
+     for (const item of oder.items) {
+         await productdb.findByIdAndUpdate(item.productId, {
+           $inc: { stock: item.quantity },
+         });
+   
+         
+     }
+         
+         if (!wallet) {
+           const wallett = new walletdb({
+             user: user,
+             balance: oder.totalAmount,
+             transactions: { type: 'refund', amount: oder.totalAmount, description: `Order Returned for item ` }
+   
+           })
+           wallett.save()
+         } else {
+   
+           updatedWallet = await walletdb.findOneAndUpdate(
+             { user: oder.userId },
+             {
+               $inc: { balance: oder.totalAmount },
+               $push: { transactions: { type: 'refund', amount: oder.totalAmount, description: `Order Returned for item` } }
+             },
+             { upsert: true, new: true }
+           );
+         }
+   
+   
+     res.status(200).json("data")
+     
+
+    } catch (error) {
+     console.log(error);
+     res.redirect('/error500')
+    }
+    
+}
+
+
 
 module.exports={
-    get_order,updateStatus,orderDetail
+    get_order,updateStatus,updateReturn,orderDetail
 }

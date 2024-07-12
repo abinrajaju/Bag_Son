@@ -291,13 +291,32 @@ const orderDetail=async(req,res)=>{
 }
 
 
+const retur= async(req,res)=>{
+    
+    try {
+     const user= await userdb.findOne({email:req.session.email})
+     const orderUpdate = await orderdb.findByIdAndUpdate(req.params.id, {
+         $set: { status: "Return Requested" }
+       }, { new: true }).populate("items.productId");
+       if(!orderUpdate){
+         return res.status(404).json({ success: false, message: "Order not found" });
+       }
+       res.status(200).json({ success: true, message: "Order returned successfully" });
+       
+    } catch (error) {
+     console.log(error);
+     res.redirect('/error500')
+    }
+   
+ }
+
 
 
 
 
 module.exports={
     profile,address,userorders,wishlisted,add_wishlist,remove_wishlist,get_address,add_address,delete_address,cancelOrder,
-    getwallet,orderDetail
+    getwallet,orderDetail,retur
 
 
 }

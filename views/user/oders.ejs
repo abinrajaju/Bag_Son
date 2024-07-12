@@ -158,15 +158,19 @@
                     </div>
                     
                     <div class="tab-pane" id="nav-return-requested" role="tabpanel" aria-labelledby="nav-return-requested-tab">
-                        <% orders.filter(order => order.status === 'Return Requested').forEach(order => { %>
-
+                        <% orders.filter(order => order.status === 'Return Requested'||order.status ==='Return Rejected').forEach(order => { %>
+                                    
                                 <div class="col-md-12 mb-3">
                                     <div class="card shadow">
                                         <a href="/orderDetail/<%= order._id %>" style="text-decoration: none;">
                                         <div class="card-header d-flex justify-content-between align-items-center">
                                             <h5 class="card-title text-muted m-2">OrderID. <%= order.orderId %></h5>
                                             <span class="text-success">Order Delivered</span>
+                                            <% if(order.status==='Return Rejected'){%>
+                                                <a href="#" id="cancel-return-btn" >Return canceled</a>
+                                                <% } else{ %>
                                             <a href="#" id="cancel-return-btn" class="btn btn-success cancel-return-btn" data-order-id="<%= order._id %>">Cancel Return</a>
+                                            <% } %>
                                         </div>
                                     </a>
                                         <div class="card-body">
@@ -324,6 +328,7 @@
                 cancelButtonText: "No, keep it"
             }).then((willReturn) => {
                 if (willReturn.isConfirmed) {
+                    console.log(orderId);
                     // Send AJAX request to return the order
                     $.ajax({
                         url: `/returnOrder/${orderId}`,
