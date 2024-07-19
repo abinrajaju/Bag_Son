@@ -6,9 +6,39 @@
   <!-- Box icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/easyzoom/2.5.2/easyzoom.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/easyzoom/2.5.2/easyzoom.js"></script>
+
   <link rel="stylesheet" href="/assets/css/index.css" />
   <title>BAGSO</title>
 </head>
+<style>
+  
+.product_details-offers h3,
+.product_details-delivery h3 {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.product_details-offer {
+  font-size: 14px;
+}
+.carousel {
+  padding-bottom: 30px;
+}
+.carousel-item {
+  overflow: hidden;
+}
+
+.product-view-main-image {
+  transition: transform 0.5s ease;
+}
+
+.carousel-item:hover .product-view-main-image {
+  transform: scale(3.5);
+}
+</style>
 <body>
   <!-- Navigation -->
   <div class="navigation aju">
@@ -46,7 +76,7 @@
             <div class="carousel-inner">
               <% product.images.forEach((image, index) => { %>
               <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
-                <img src="<%= image %>" class="d-block w-100" alt="">
+                <img src="<%= image %>" class="d-block w-100 product-view-main-image" alt="">
               </div>
               <% }) %>
             </div>
@@ -59,6 +89,13 @@
               <span class="visually-hidden">Next</span>
             </button>
           </div>
+          <span class="form">
+            <a href="cart/<%=product._id %>" class="addCart">Add To Cart</a>
+          </span>
+          
+          <span class="form">
+            <a href="wishlist/<%=product._id %>" class="addCart">Add Wishlist</a>
+          </span>
         </div>
       </div>
       <div class="right">
@@ -68,7 +105,9 @@
               <span class="product_details-original-price">M.R.P.: &#8377;<%= product.price %></span>
               <span class="product_details-discount">(<%= Math.round(((product.price - product.offerPrice) / product.price) * 100) %> % off)</span>
                               <% } else { %>
-        <div class="price">&#8377; <%= product.price %></div>
+                                <h4 class="product_details-offer-price">&#8377;<%= product.price - product.discount %></h4>
+                                <h5><span class="product_details-original-price">M.R.P.: &#8377;<%= product.price %></span>
+                                  <span class="product_details-discount">(<%= Math.round((product.discount / product.price) * 100) %>% discount)</span></h5>
         <% } %>
         <form action="/cart" method="post">
           <div>
@@ -82,12 +121,26 @@
             <!-- <span><i class="bx bx-chevron-down"></i></span> -->
           </div>
         </form>
-        <form class="form">
-          <a href="cart/<%=product._id %>" class="addCart">Add To Cart</a>
-        </form>
-        <form class="form">
-          <a href="wishlist/<%=product._id %>" class="addCart">Add Wishlist</a>
-        </form>
+        
+        <div class="product_details-offers" style="margin-top: 20px; border-top: 1px solid #f0f0f0; padding-top: 15px;">
+          <h3 style="font-size: 16px; font-weight: 500; margin-bottom: 10px;">Available offers</h3>
+          <ul class="product_details-offers-list" style="list-style-type: none; padding-left: 0;">
+            <li class="product_details-offer" style="margin-bottom: 10px;">
+              <img src="/assets/img/icons8-discount-30.png" alt="Discount Icon" style="width: 18px; margin-right: 10px;">
+              <span style="font-size: 14px;">Get 50% instant discount on BAGSON transaction on order of ₹2500 and above</span>
+              <a href="#" style="color: #2874f0; font-weight: 500; margin-left: 5px;">T&C</a>
+            </li>
+            <li class="product_details-offer" style="margin-bottom: 10px;">
+              <img src="/assets/img/icons8-discount-30.png" alt="Discount Icon" style="width: 18px; margin-right: 10px;">
+              <span style="font-size: 14px;">Get 50% instant discount on BAGSON transaction on order of ₹1999</span>
+              <a href="#" style="color: #2874f0; font-weight: 500; margin-left: 5px;">T&C</a>
+            </li>
+            <li class="product_details-offer" style="margin-bottom: 10px;">
+              <img src="/assets/img/icons8-discount-30.png" alt="Discount Icon" style="width: 18px; margin-right: 10px;">
+              <span style="font-size: 14px;">Coupons soon Freekip</span>
+            </li>
+          </ul>
+        </div>
         <h3>Product Detail</h3>
         <p> <%= product.description %></p>
       </div>
@@ -101,25 +154,37 @@
       <a href="#" class="view-more">View more</a>
     </div>
     <div class="product-center container">
-      <% products.forEach(product => { %>
-      <div class="product-item">
-        <div class="overlay">
-          <a href="productdetail?id=<%= product._id %>" class="product-thumb">
-              <img src="<%= product.images[0] %>" alt="" />
+      <% products.forEach(product=>{%>
+        <div class="product-item">
+          <div class="overlay">
+            <a href="productdetail?id=<%=product._id %>" class="product-thumb">
+              <img src="<%=product.images[0] %>" alt="" />
             </a>
+          </div>
+          <div class="product-info">
+            <span><a href="/productdetail?id=<%=product._id  %>"><%=product.product_name %></a></span>
+            <% if (product.offerPrice && product.offerPrice < product.price) { %>
+              <h4 class="product_details-offer-priceee">&#8377;<%= product.offerPrice %></h4>
+              <span class="product_details-original-price">M.R.P.: &#8377;<%= product.price %></span>
+              <span class="product_details-discount">(<%= Math.round(((product.price - product.offerPrice) / product.price) * 100) %> % off)</span>
+                              <% } else { %>
+                                <h4 class="product_details-offer-price">&#8377;<%= product.price - product.discount %></h4>
+            <h5><span class="product_details-original-price">M.R.P.: &#8377;<%= product.price %></span>
+              <span class="product_details-discount">(<%= Math.round((product.discount / product.price) * 100) %>% discount)</span></h5>
+            <% } %>
+            <h4><%=product.brand %></h4>
+          </div>
+          <ul class="icons">
+            <% if (wishlist && wishlist.items.some(items=>items.productId.toString()===product._id.toString())) { %>
+            <li style="background-color: brown;"><i class="bx bx-heart"></i></li>
+            <% } else { %>
+              <li ><i class="bx bx-heart"></i></li>
+              <% } %>
+            <li><a href="/productdetail?id=<%=product._id  %>"><i class="bx bx-search"></i></a></li>
+            <li><a href="cart/<%=product._id %>"><i class="bx bx-cart"></i></a></li>
+          </ul>
         </div>
-        <div class="product-info">
-          <a href="/productdetail?id=<%= product._id %>">   <span><%= product.product_name %></span>
-              <h4><%= product.brand %></h4>
-          <h5>&#8377 <%= product.price %></h5>
-        </div>
-        <ul class="icons">
-          <li><i class="bx bx-heart"></i></li>
-          <li><a href="/productdetail?id=<%= product._id %>"></a><i class="bx bx-search"></i></li>
-          <li><a href="cart/<%=product._id %>"><i class="bx bx-cart"></i></a></li>
-        </ul>
-      </div>
-      <% }) %>
+        <%}) %>
       </div>
 
   <!-- Footer -->

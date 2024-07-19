@@ -9,6 +9,7 @@ const path=require('path')
 const orderController=require('../controller/admin_control/order_control')
 const coupon=require('../controller/admin_control/coupon')
 const offer=require('../controller/admin_control/offer_controller')
+const sales=require('../controller/admin_control/sales_control')
 
 //multer/
 const storage=multer.diskStorage({
@@ -26,7 +27,7 @@ const upload=multer({storage:storage});
 
 
 route.get('/adminsignup',controller.adminlogin)
-route.get('/admin',controller.admindash)
+route.get('/admin',check.adminCheck,controller.admindash)
 route.get('/adminlogout',check.adminCheck,controller.adminlogout)
 route.get('/category',check.adminCheck,categoryController.list)
 route.get('/addcategory',check.adminCheck,categoryController.get_add)
@@ -52,6 +53,7 @@ route.get('/orders',check.adminCheck,orderController.get_order)
 route.post('/updateOrderStatus/:orderId',check.adminCheck,orderController.updateStatus)
 route.get('/orderDetails/:id',check.adminCheck,orderController.orderDetail)
 route.post('/up-return/:id',check.adminCheck,orderController.updateReturn)
+route.get('/productlist',check.adminCheck,productController.unlist)
 
 //coupon
 route.get('/coupon',check.adminCheck,coupon.get_coupon)
@@ -68,5 +70,15 @@ route.get('/offers',check.adminCheck,offer.get_offer)
 route.get ('/addOffer',check.adminCheck,offer.add_offer)
 route.post('/addoffer',check.adminCheck,offer.adding)
 route.get('/offerlist',check.adminCheck,offer.unlistOffer)
+
+
+
+//sales
+route.get('/dailyChart',sales.dailyChart)
+route.get('/monthlyChart',sales.monthlySales)
+route.get('/yearlyChart',sales.yearlySales)
+route.get('/getSalesReport',sales.get_report)
+route.get('/salesReport',sales.generateReport)
+
 
 module.exports=route

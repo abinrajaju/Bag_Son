@@ -41,6 +41,7 @@ const orderDetail = async (req, res) => {
     try {
         const orderId = req.params.id
         const order = await orderdb.findById(orderId).populate('items.productId')
+        
        
         res.render('admin/order_view', { order })
 

@@ -37,7 +37,7 @@ const oder_place=async(req,res)=>{
         const { items, addressId } = data;
         console.log(totalamount);
         
-           
+          
         const address = await addressdb.findById(addressId);
         
         if (!address) {
@@ -71,7 +71,9 @@ const oder_place=async(req,res)=>{
             }
 
             product.stock -= item.quantity;
+            product.count += 1;
             await product.save();
+            
 
             updatedProducts.push({
                 productId: productId,
@@ -222,6 +224,8 @@ const onlinepayed=async(req,res)=>{
             }
 
             product.stock -= item.quantity;
+            product.count += 1;
+
             await product.save();
 
             updatedProducts.push({
@@ -295,6 +299,7 @@ const walletpay=async(req,res)=>{
             }
 
             product.stock -= item.quantity;
+            product.count += 1;
             await product.save();  
             
             updatedProducts.push({
@@ -353,15 +358,18 @@ const apply_coupon=async(req,res)=>{
   const {couponCode,totalAmount}=req.body
 
   const coupon= await coupondb.findOne({couponcode:couponCode})
-  if (!coupon || coupon.expireDate < new Date() || coupon.minPurchaseAmount > totalAmount) {
-    return res.status(400).json({ message: 'Invalid or expired coupon' })
+  if (!coupon || coupon.expireDate < new Date() ) {
+    return res.status(400).json({ message: ' expired coupon' })
+}
+if ( coupon.minPurchaseAmount > totalAmount) {
+    return res.status(400).json({ message: `Purchase${coupon.minPurchaseAmount} above`  })
 }
 const discount = parseInt((totalAmount) * (coupon.discountPercentage)) / 100
         
         const newTotalAmount = Math.round(parseInt(totalAmount) - discount)
         
             
-        res.json({ newTotalAmount,discount});
+        res.json({newTotalAmount,discount});
 
 
 }

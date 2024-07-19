@@ -108,6 +108,7 @@
                                                     </div>
                                                 </div>
                                                 <% }) %>
+                                                <div id="errorMessage"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -179,7 +180,7 @@
                                                     
                                             </div>
                                             
-                                            <div id="errorMessage"></div>
+                                            
                                         </div>
                                    
                                     </div>
@@ -255,9 +256,11 @@
         <td colspan="2">
             <h5 class="font-size-14 m-0">Shipping Charge :</h5>
         </td>
-        <td>
-            Free
-        </td>
+        <% if(products.totalAmount>'1000'){ %>
+        <td>Free</td>
+        <% }else{ %>
+            <td>50</td>
+            <% } %>
     </tr>
     <tr>
         <td colspan="2">
@@ -269,10 +272,11 @@
         <td colspan="2">
             <h5 class="font-size-14 m-0">Total:</h5>
         </td>
-        <td id="totalAmountid">
-            <%= products.balance %>
-           
-        </td>
+        <% if(products.totalAmount>'1000'){ %>
+        <td id="totalAmountid"><%= products.balance %></td>
+        <% }else{ %> 
+            <td id="totalAmountid"> <%= products.balance+50 %></td>
+            <% } %>
     </tr>
 </tbody>
 <%}%>
@@ -419,6 +423,15 @@
                         if (paymentMethod === 'cod' && items.length != 0) {
                             var totalElement = document.getElementById('totalAmountid');
                                 const totalamount = totalElement.textContent.trim();
+
+                                   if(totalamount>1000){
+                                    Swal.fire({
+										title: "Failed!",
+										text:  "Cash not delivery allowed above 1000",
+										icon: "error",
+									});
+                                   }else{
+
                            
                             fetch("/stockresult", {
 								method: 'post',
@@ -442,7 +455,7 @@
 									}
 								})
 
-						}
+						}}
                         
                              if(paymentMethod === 'online' && items.length != 0){
                                 console.log("hi111");

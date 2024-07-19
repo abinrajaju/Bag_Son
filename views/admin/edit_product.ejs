@@ -17,7 +17,8 @@
   <!-- Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <!-- Material Dashboard CSS -->
-  <link id="pagestyle" href="/css/material-dashboard.css?v=3.1.0" rel="stylesheet" />
+  
+  <link id="pagestyle" href="/assets/css/material-dashboard.min.css" rel="stylesheet" />
   <!-- DataTable CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css" />
@@ -164,10 +165,11 @@
             <div class="mb-3">
               <label for="Category" class="form-label">Category:</label>
               <select class="form-control" id="category" name="category" required>
-                <option value="">Select Category</option>
+                <option value="<%= category._id %>"><%=pro_get.Category.CategoryName %></option>
                 <% category.forEach(category=>{ %>
+                
                     <option value="<%= category._id %>"><%= category.CategoryName %></option>
-                <% }) %>
+                <%  }) %>
               </select>
               
           </div>
@@ -200,7 +202,7 @@
               <div id="imageContainer" class="d-flex flex-row align-items-center"><!-- Changed flex-direction to row -->
                   <% pro_get.images.forEach((image, index) => { %>
                       <div class="image-preview me-2 position-relative"><!-- Added margin class and position relative -->
-                          <img src="<%= image %>" alt="image" class="w-75" id="imgView<%= index %>">
+                          <img src="/<%= image %>" alt="image" class="w-15" id="imgView<%= index %>">
                           <button type="submit" class="btn btn-danger btn-sm delete-image position-absolute" onclick="deleteImage('<%= pro_get._id %>', '<%= index %>')">x</button>
                       </div>
                   <% }); %>
@@ -252,7 +254,7 @@
         const imagePreview = document.createElement('div');
         imagePreview.className = 'image-preview me-2 position-relative';
         imagePreview.innerHTML = `
-            <img src="${imageUrl}" alt="image" class="w-75">
+            <img src="${imageUrl}" alt="image" class="w-15">
             <button type="button" class="btn btn-danger btn-sm delete-image position-absolute" onclick="deleteImage('<%= pro_get._id %>', '${i}')">x</button>
         `;
         imageContainer.appendChild(imagePreview);

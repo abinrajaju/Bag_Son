@@ -8,7 +8,7 @@ const wishlistdb=require('../../model/wishlistmodel')
 const dotenv = require('dotenv')
 dotenv.config({ path: 'config.env' })
 const offerdb=require('../../model/offermodel')
-
+const categorydb= require('../../model/category')
 
 
 
@@ -314,15 +314,32 @@ const applyoffer = async (product) => {
 const productDetail = async (req, res) => {
 
             
-  const products = await productdb.find()
   
+  let wishlist=null
   const product = await productdb.findById(req.query.id).populate('Category')
+  const Category=await categorydb.findOne({CategoryName:product.Category.CategoryName});
+  const products=await productdb.find({Category:Category._id,}).populate('Category')
+
   
-  
+  if (req.cookies.userToken) {
+    user = await userdb.findOne({ email: req.session.email });
+    
+    if(!user){
+        req.session.email = null
+        req.session= null;
+        res.clearCookie('userToken');
+        res.redirect('/')
+    }
+  wishlist = await wishlistdb.findOne({ user: user._id });
+    }
+
+  for (const product of products) {
+    await applyoffer(product);
+}
     await applyoffer(product);
 
 
-  res.render('user/productDetail', { product, products })
+  res.render('user/productDetail', { product, products,wishlist })
 
 }
 

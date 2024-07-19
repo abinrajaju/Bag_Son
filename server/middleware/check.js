@@ -13,21 +13,7 @@ const adminCheck=async(req,res,next)=>{
 
 
 
-const checkUser=async(req,res,next)=>{
-  
-    if(req.session.email){
-      
-      const user= await userdb.findOne({email:req.session.email})
-    
-      if(user&&user.status=='active'){
-        next()
-      }else{
-        res.redirect('/userlogin')
-      }
-    }else{
-      res.redirect('/userlogin')
-    }
-  }
+
 
 const active=async(req,res,next)=>{
   try {
@@ -65,5 +51,5 @@ const checklog=async(req,res,next)=>{
 
 
 module.exports={
-    adminCheck,checkUser,active,checklog
+    adminCheck,active,checklog
 }

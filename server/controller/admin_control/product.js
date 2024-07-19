@@ -90,8 +90,11 @@ const get_edit=async(req,res)=>{
     try {
         
             const id = req.params.id;
+            
+            
             const category = await Categorydb.find()
-            const pro_get = await productdb.findById(id)
+            const pro_get = await productdb.findById(id).populate('Category')
+            
 
 
             res.render('admin/edit_product', { pro_get: pro_get, category: category })
@@ -175,9 +178,23 @@ const deleteImage = async (req, res) => {
     }
 }
 
+const unlist = async (req, res) => {
+    try {
+        const productId = req.query.id;
+        const product = await productdb.findById(productId)
+
+        product.list = product.list === 'listed' ? 'blocked' : 'listed';
+        await product.save();
+
+        res.redirect('/products')
+    }
+    catch (error) {
+        console.error("error blocking/unblocking user", error)
+    }
+}
 
 
 
 module.exports={
-    list,creatProduct,add_product,get_edit,post_edit,pro_delete,deleteImage
+    list,creatProduct,add_product,get_edit,post_edit,pro_delete,deleteImage,unlist
 }

@@ -266,7 +266,7 @@ const getwallet=async(req,res)=>{
         
         const user= await userdb.findOne({email:req.session.email})
         const wallet= await walletdb.findOne({user:user})
-      
+        wallet.transactions.reverse()
         res.render('user/wallethistory',{walletHistory:wallet,user})
 
     }catch(err){

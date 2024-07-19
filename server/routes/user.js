@@ -7,6 +7,7 @@ const profile=require('../controller/user_control/profile_control')
 const cart=require('../controller/user_control/cart_control')
 const checkout=require('../controller/user_control/checkout_control')
 const admin=require('../controller/admin_control/admin_controller')
+const invoice=require('../controller/user_control/invoicecontroller')
 
 
 //login&signup
@@ -23,15 +24,17 @@ route.get('/userlogout',controller.logout)
 //shop
 route.get('/productdetail',check.active,controller.productDetail)
 route.get('/mens',check.active,product.men)
-route.get('/block',check.active,controller.block)
+route.get('/block',controller.block)
 route.get('/women',check.active,product.women)
 route.get('/kid',check.active,product.kid)
-route.get('/prod',product.allproduct)
-route.post('/shop',product.shopeCata)
-route.post('/productsort',product.sort_product)
-route.post('/outsort',product.Catasort)
-route.post('/allshop',product.nocata)
-route.post('/search',product.search)
+route.get('/prod',check.active,product.allproduct)
+route.post('/shop',check.active,product.shopeCata)
+route.post('/productsort',check.active,product.sort_product)
+route.post('/outsort',check.active,product.Catasort)
+route.post('/allshop',check.active,product.nocata)
+route.post('/search',check.active,product.search)
+route.get('/viewmoreorder',check.active,product.pagination)
+
 
 
 
@@ -42,8 +45,8 @@ route.post('/search',product.search)
 route.get('/profile',check.checklog,profile.profile)
 route.get('/useraddress',check.active,profile.address)
 route.get('/userorders',check.active,profile.userorders)
-route.get('/wishlisted',check.active,profile.wishlisted)
-route.get('/wishlist/:id',check.active,profile.add_wishlist)
+route.get('/wishlisted',check.checklog,check.active,profile.wishlisted)
+route.get('/wishlist/:id',check.checklog,check.active,profile.add_wishlist)
 route.delete('/deleteWishlist/:id',check.active,profile.remove_wishlist)
 route.get('/addaddress',check.active,profile.get_address)
 route.post('/addaddress',check.active,profile.add_address)
@@ -52,8 +55,11 @@ route.get('/cancelOrder/:orderId',check.active,profile.cancelOrder)
 route.get('/wallethistory',check.active,profile.getwallet)
 route.get('/orderDetail/:id',check.active,profile.orderDetail)
 route.get('/returnOrder/:id',check.active,profile.retur)
+route.get('/orders/:orderId/invoice',check.active,invoice.generateOrderInvoice)
+
+
 //cart
-route.get('/cart',check.checklog,cart.get_cart)
+route.get('/cart',check.checklog,check.active,cart.get_cart)
 route.get('/cart/:id',check.checklog,cart.add_cart)
 route.get('/remove/:id',check.active,cart.remove)
 route.put('/up-quantity/:id',check.active,cart.update_quandity)

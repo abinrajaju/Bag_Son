@@ -1285,7 +1285,7 @@ th:last-child {
 }
 
 .product-detail form {
-  margin-bottom: 2rem;
+ 
   z-index: 0;
 }
 
@@ -1299,7 +1299,8 @@ th:last-child {
 }
 
 .product-detail .form {
-  margin-bottom: 3rem;
+  
+  padding-top: 30px;
 }
 
 .product-detail .form input {

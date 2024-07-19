@@ -51,7 +51,7 @@ const men= async(req,res)=>{
         for (const product of products) {
             await applyoffer(product);
         }
-        res.render('user/products',{products,category})
+        res.render('user/products',{products,category,pages:0})
     
     }catch(err){
         console.error(err);
@@ -69,7 +69,7 @@ const women= async(req,res)=>{
         await applyoffer(product);
     }
     
-    res.render('user/products',{products,category})
+    res.render('user/products',{products,category,pages:0})
     
     }catch(err){
         console.error(err);
@@ -87,7 +87,7 @@ const kid= async(req,res)=>{
         await applyoffer(product);
     }
     
-    res.render('user/products',{products,category})
+    res.render('user/products',{products,category,pages:0})
     
     }catch(err){
         console.error(err);
@@ -98,12 +98,17 @@ const kid= async(req,res)=>{
 
 const allproduct=async(req,res)=>{
     try{
+
+      
         
-        const user= await userdb.findOne({email: req.session.email})
+        
         let cartCount = 0;
-        const products = await productdb.find({list:'listed'}).populate("Category")
+        const products = await productdb.find({list:'listed'}).populate("Category").limit(8).sort({_id : -1 });
         const category=await categorydb.find(); 
-      if(user){
+        let pages = await productdb.countDocuments();
+    pages = Math.ceil(pages/8)
+      if(req.cookies.userToken){
+        const user= await userdb.findOne({email: req.session.email})
         const cart = await cartdb.findOne({ user: user._id });
             cartCount = cart ? cart.items.length : 0;
           const  wishlist = await wishlistdb.findOne({ user: user._id });
@@ -113,9 +118,9 @@ const allproduct=async(req,res)=>{
             await applyoffer(product);
         }
         
-            res.render('user/products',{products,mencategory:"",wishCount,cartCount,category})
+            res.render('user/products',{products,wishCount,cartCount,category,pages})
       }else{
-        res.render('user/products',{products,mencategory:"",wishCount:0,cartCount:0,category})
+        res.render('user/products',{products,wishCount:0,cartCount:0,category,pages})
       }
         
     }catch(err){
@@ -130,8 +135,10 @@ const shopeCata=async(req,res)=>{
     try{
      const category=req.body.items
      
-     const products = await productdb.find({ Category: category,list:'listed' }).populate('Category');
-     
+     const products = await productdb.find({ Category: category,list:'listed' }).populate('Category').limit(8).sort({_id : -1 });
+     for (const product of products) {
+        await applyoffer(product);
+    }
       res.status(200).json(products)
         
          
@@ -235,8 +242,10 @@ const nocata= async(req,res)=>{
     try{
         const category=req.body.items
         
-        const products = await productdb.find({ list:'listed' })
-        
+        const products = await productdb.find({ list:'listed' }).limit(8).sort({_id : -1 });
+        for (const product of products) {
+            await applyoffer(product);
+        }
          res.status(200).json(products)
            
             
@@ -261,11 +270,12 @@ const search=async(req,res)=>{
                 { product_name: { $regex: regex } },
                 { brand: { $regex: regex } },
                 { color: { $regex: regex } },
-                { size: { $regex: regex } },
                 { description: { $regex: regex } }
             ]
         });
-        
+        for (const product of products) {
+            await applyoffer(product);
+        }
 
         res.status(200).json(products);
      } catch (error) {
@@ -274,6 +284,15 @@ const search=async(req,res)=>{
      }
 }
 
+
+const pagination=async(req,res)=>{
+
+ const page = req.query.page;
+    let jump = (page-1) * 8;
+    const next = await productdb.find({list:'listed'}).populate("Category").limit(8).skip(jump).sort({_id : -1 });
+    return res.status(200).json({ next});
+}
+
 module.exports={
-    men,kid,women,allproduct,shopeCata,sort_product,Catasort,nocata,search
+    men,kid,women,allproduct,shopeCata,sort_product,Catasort,nocata,search,pagination
 }

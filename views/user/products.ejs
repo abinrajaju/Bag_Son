@@ -58,6 +58,25 @@
   #custom-search-button:hover {
       background-color: #0056b3;
   }
+  
+  .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .page-btn {
+      margin: 0 5px;
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #fff;
+      cursor: pointer;
+    }
+
+    .page-btn:hover {
+      background-color: #f0f0f0;
+    }
 </style>
 
 <body>
@@ -179,6 +198,21 @@
         </div>
         <% }) %>
     </div>
+
+    <!-- pagination -->
+     <div class="pagination-container">
+           <div class="pagination" id="innerpage">
+                            <% for (let i=1; i <=pages; i++) { %>
+                                <button class="page-btn" data-page="<%= i %>">
+                                    <%= i %>
+                                </button>
+                                <% } %>
+                        </div>
+                        </div>
+
+
+
+
   </section>
   <!-- Footer -->
   <footer class="footer">
@@ -241,7 +275,9 @@
                             <span class="product_details-original-price">M.R.P.: &#8377;${product.price}</span>
                             <span class="product_details-discount">(${Math.round(((product.price - product.offerPrice) / product.price) * 100)}% off)</span>
                         ` : `
-                            <h5>&#8377;${product.price}</h5>
+                            <h4 class="product_details-offer-price">&#8377;${ product.price - product.discount}</h4>
+              <h5><span class="product_details-original-price">M.R.P.: &#8377${ product.price}</span>
+                <span class="product_details-discount">(${Math.round((product.discount / product.price) * 100) }% discount)</span></h5>
                         `}
                     </a>
                 </div>
@@ -253,8 +289,7 @@
             </div>
         `;
         
-        // Assuming you have a container to append the product items
-        // document.querySelector('.product-center').insertAdjacentHTML('beforeend', productHTML);
+        
     });
 })
       }else{
@@ -289,7 +324,9 @@
                             <span class="product_details-original-price">M.R.P.: &#8377;${product.price}</span>
                             <span class="product_details-discount">(${Math.round(((product.price - product.offerPrice) / product.price) * 100)}% off)</span>
                         ` : `
-                            <h5>&#8377;${product.price}</h5>
+                             <h4 class="product_details-offer-price">&#8377;${ product.price - product.discount}</h4>
+              <h5><span class="product_details-original-price">M.R.P.: &#8377${ product.price}</span>
+                <span class="product_details-discount">(${Math.round((product.discount / product.price) * 100) }% discount)</span></h5>
                         `}
                     </a>
                 </div>
@@ -301,8 +338,7 @@
             </div>
         `;
         
-        // Assuming you have a container to append the product items
-        // document.querySelector('.product-center').insertAdjacentHTML('beforeend', productHTML);
+        
     });
 })
     }
@@ -345,7 +381,9 @@
                             <span class="product_details-original-price">M.R.P.: &#8377;${product.price}</span>
                             <span class="product_details-discount">(${Math.round(((product.price - product.offerPrice) / product.price) * 100)}% off)</span>
                         ` : `
-                            <h5>&#8377;${product.price}</h5>
+                             <h4 class="product_details-offer-price">&#8377;${ product.price - product.discount}</h4>
+              <h5><span class="product_details-original-price">M.R.P.: &#8377${ product.price}</span>
+                <span class="product_details-discount">(${Math.round((product.discount / product.price) * 100) }% discount)</span></h5>
                         `}
                     </a>
                 </div>
@@ -357,8 +395,7 @@
             </div>
         `;
         
-        // Assuming you have a container to append the product items
-        // document.querySelector('.product-center').insertAdjacentHTML('beforeend', productHTML);
+        
     });
   })
     }
@@ -393,7 +430,9 @@
                             <span class="product_details-original-price">M.R.P.: &#8377;${product.price}</span>
                             <span class="product_details-discount">(${Math.round(((product.price - product.offerPrice) / product.price) * 100)}% off)</span>
                         ` : `
-                            <h5>&#8377;${product.price}</h5>
+                             <h4 class="product_details-offer-price">&#8377;${ product.price - product.discount}</h4>
+              <h5><span class="product_details-original-price">M.R.P.: &#8377${ product.price}</span>
+                <span class="product_details-discount">(${Math.round((product.discount / product.price) * 100) }% discount)</span></h5>
                         `}
                     </a>
                 </div>
@@ -405,8 +444,7 @@
             </div>
         `;
         
-        // Assuming you have a container to append the product items
-        // document.querySelector('.product-center').insertAdjacentHTML('beforeend', productHTML);
+        
     });
      })
 
@@ -459,13 +497,70 @@
             </div>
         `;
         
-        // Assuming you have a container to append the product items
-        // document.querySelector('.product-center').insertAdjacentHTML('beforeend', productHTML);
     });
                })
  
 });
 
+</script>
+<script>
+
+  // pagination
+  document.addEventListener("DOMContentLoaded", function () {
+                            const pageButtons = document.querySelectorAll('.page-btn');
+                            const selectedItemId = document.getElementById('shop').value;
+                            pageButtons.forEach(button => {
+                                button.addEventListener('click', function () {
+                                    const page = this.getAttribute('data-page');
+                                    const url = `/viewmoreorder?page=${page}&cata=${selectedItemId}`;
+
+                                    fetch(url)
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                throw new Error("Failed to fetch data");
+                                            }
+                                            return response.json();
+                                        }).then(res => {
+                                          const productGrid = document.getElementById('innerPeace');
+                                          productGrid.innerHTML = '';
+                                          res.next.forEach(product => {
+      productGrid.innerHTML += `
+            <div class="product-item">
+                <div class="overlay">
+                    <a href="productdetail?id=${product._id}" class="product-thumb">
+                        <img src="${product.images[0]}" alt="" />
+                    </a>
+                </div>
+                <div class="product-info">
+                    <a href="/productdetail?id=${product._id}">
+                        <span>${product.product_name}</span>
+                        <h4>${product.brand}</h4>
+                        ${product.offerPrice && product.offerPrice < product.price ? `
+                            <h4 class="product_details-offer-price">&#8377;${product.offerPrice}</h4>
+                            <span class="product_details-original-price">M.R.P.: &#8377;${product.price}</span>
+                            <span class="product_details-discount">(${Math.round(((product.price - product.offerPrice) / product.price) * 100)}% off)</span>
+                        ` : `
+                            <h5>&#8377;${product.price}</h5>
+                        `}
+                    </a>
+                </div>
+                <ul class="icons">
+                    <li><i class="bx bx-heart"></i></li>
+                    <li><a href="/productdetail?id=${product._id}"><i class="bx bx-search"></i></a></li>
+                    <li><a href="cart/${product._id}"><i class="bx bx-cart"></i></a></li>
+                </ul>
+            </div>
+        `;
+        
+    });
+    addEventListenersToButtons();
+                                        }).catch(error => {
+                                            console.error("Error:", error);
+                                            // Handle fetch errors
+                                        });
+                                      }) 
+                                    })
+                                  })
 </script>
 </body>
 

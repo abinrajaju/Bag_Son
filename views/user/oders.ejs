@@ -72,7 +72,7 @@
                 </nav>
                 <div class="tab-content mb-5">
                     <div class="tab-pane active ms-4" id="nav-placed" role="tabpanel" aria-labelledby="nav-placed-tab">
-                        <% orders.filter(order => order.status === 'Pending' || order.status === 'Shipped').forEach(order => { %>
+                        <% orders.filter(order => order.status === 'Pending' || order.status === 'Shipped' ||order.status==='Order Placed').forEach(order => { %>
                         <div class="col-md-12 mb-3">
                             <div class="card shadow">
                                 <a href="/orderDetail/<%= order._id %>" style="text-decoration: none;">
@@ -145,9 +145,9 @@
                                             <div class="d-flex">
                                                 <span class="m-1 font-weight-bold">Total Amount: <%= order.totalAmount %></span>
                                             </div>
-                                            <!-- <form action="/orders/<%= order._id %>/invoice" method="GET">
+                                            <form action="/orders/<%= order._id %>/invoice" method="GET">
                                                          <button type="submit" class="btn btn-primary">Download Invoice</button>
-                                                   </form> -->
+                                                   </form>
                             
                                             <!-- Add more order details here -->
                                         </div>

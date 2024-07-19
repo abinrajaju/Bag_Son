@@ -42,6 +42,10 @@ let productsschema = new mongoose.Schema({
     offerPrice: {
         type: Number,
     },
+    count:{
+        type:Number,
+        default:0
+    }
 });
 
 const productdb = mongoose.model('product', productsschema);
