@@ -293,6 +293,51 @@ const pagination=async(req,res)=>{
     return res.status(200).json({ next});
 }
 
+
+
+const addtowish=async(req,res)=>{
+    try {
+        const productId = req.body.Id;
+        const user = await userdb.findOne({ email: req.session.email });
+        let userWish = await wishlistdb.findOne({ user:user._id});
+        if (!userWish) {
+            userWish = new wishlistdb({
+                user: user._id,
+                items: [{ productId: productId }]
+            });
+            await userWish.save();
+            res.json({message:'added'})
+        
+        } else {
+            if (userWish.items.some(items=>items.productId.toString()===productId.toString())){
+                const itemIndex = userWish.items.findIndex(item => item.productId.toString() === productId);
+
+        if (itemIndex === -1) {
+            return res.status(404).render('error500');
+        }
+
+                 userWish.items.splice(itemIndex, 1);
+
+                    await userWish.save();
+                res.json({message:'removed'})
+            }else{
+           userWish.items.push({ productId: productId});
+           await userWish.save() 
+           res.json({message:'added'})
+                
+            //    res.redirect('/wishlisted')
+             
+            }}
+       
+
+        
+    }
+    catch (error) {
+        console.error( error)
+
+    }
+}
+
 module.exports={
     men,kid,women,allproduct,shopeCata,sort_product,Catasort,nocata,search,pagination
 }

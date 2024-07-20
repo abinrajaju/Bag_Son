@@ -24,7 +24,7 @@ const generateOrderInvoice = async (req, res) => {
     doc.pipe(stream);
     
     // Add logo
-    const logoPath = path.join(__dirname, '/uplode/logo');
+    const logoPath = path.join(__dirname, 'uplode/logo');
     if (fs.existsSync(logoPath)) {
         doc.image(logoPath, 50, 45, { width: 50 });
     } else {
@@ -129,7 +129,7 @@ const generateOrderInvoice = async (req, res) => {
        doc.moveDown()
        doc.moveDown()
        doc.moveDown()
-    doc.text(`Total Amount: Rs.${order.totalAmount}`, { align: 'right' });
+    doc.text(`Total Amount: Rs.${order.totalAmount}`, { align: 'center' });
     
     doc.moveDown()
        .fontSize(12)

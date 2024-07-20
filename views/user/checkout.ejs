@@ -144,7 +144,7 @@
                                                             class="card-radio-input">
                                                         <span class="card-radio py-3 text-center text-truncate">
                                                             <i class="bx bx-credit-card d-block h2 mb-3"></i>
-                                                            wallet
+                                                            wallet:<%=wallet.balance%>
                                                         </span>
                                                     </label>
                                                 </div>
@@ -495,6 +495,25 @@
 										}
 									};
 									const rzp1 = new Razorpay(options);
+                                    rzp1.on('payment.failed', function (response) {
+										console.error("Payment failed:", response);
+										alert("Payment failed. Redirecting to orders page.");
+										console.log("is it");
+
+
+										// Call a backend endpoint to update the order status
+										fetch('/failurePayment', {
+											method: 'POST',
+											headers: {
+												'Content-Type': 'application/json',
+											},
+											body: JSON.stringify({ data }),
+										}).then(() => {
+											window.location.href = '/userorders'; // Redirect to the orders page
+										}).catch(error => {
+											console.error("Error updating order status:", error);
+										});
+									});
 									rzp1.open();
                             })
                             }

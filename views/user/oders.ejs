@@ -87,7 +87,7 @@
                                     <!-- Display payment status with Bootstrap classes -->
                                     <div class="d-flex">
                                         <!-- Apply Bootstrap's success or danger class based on payment status -->
-                                        <span class="m-1 font-weight-bold text-<%= order.paymentStatus === 'Paid' ? 'success' : 'danger' %>">Payment Status: <%= order.paymentStatus %></span>
+                                        <span class="m-1 font-weight-bold text-<%= order.paymentStatus === 'Completed' ? 'success' : 'danger' %>">Payment Status: <%= order.paymentStatus %></span>
                                     </div>
                                     <!-- Display order details -->
                                     <div class="d-flex">
@@ -103,15 +103,11 @@
                                         <span class="m-1 font-weight-bold">Total Amount: <%= order.totalAmount %></span>
                                     </div>
                                     <!-- Add form for Razorpay payment -->
-                                    <% if (order.status === 'Order Payment Failed') { %>
-                                    <form id="razorpay-form" action="/razorpay/pay/<%= order._id %>" method="POST">
-                                        <input type="hidden" name="orderId" value="<%= order._id %>">
-                                        <!-- Razorpay script and button -->
-                                        <!-- Ensure to replace the Razorpay data with appropriate values -->
-                                        <script src="https://checkout.razorpay.com/v1/checkout.js" data-key="rzp_test_l0JN45NspADoRo" data-amount="<%= order.totalAmount * 100 %>" data-currency="INR" data-order_id="<%= order.razorpayOrderId %>" data-buttontext="" data-name="LOOM &" data-description="Payment for Order <%= order._id %>" data-image="/img/loomblack.png" data-prefill.name="<%= user.name %>" data-prefill.email="<%= user.email %>" data-theme.color="#4169E1">
-                                        </script>
-                                        <button id="rzp-button" class="btn btn-primary">Pay with Razorpay</button>
-                                    </form>
+                                    <% if (order.paymentStatus === 'Pending') { %>
+                                    
+                                        
+                                        <button i class="btn btn-primary retry-payment-btn" data-order-id="<%= order._id %>">Pay with Razorpay</button>
+                                    
                                     <% } %>
                                     <!-- Add more order details here -->
                                 </div>
@@ -186,9 +182,9 @@
                                             <div class="d-flex">
                                                 <span class="m-1 font-weight-bold">Total Amount: <%= order.totalAmount %></span>
                                             </div>
-                                            <!-- <form action="/orders/<%= order._id %>/invoice" method="GET">
-                                                         <button type="submit" class="btn btn-primary">Download Invoice</button>
-                                                   </form> -->
+                                            <form action="/orders/<%= order._id %>/invoice" method="GET">
+                                                <button type="submit" class="btn btn-primary">Download Invoice</button>
+                                          </form>
                             
                                             <!-- Add more order details here -->
                                         </div>
@@ -219,9 +215,9 @@
                                             <div class="d-flex">
                                                 <span class="m-1 font-weight-bold">Total Amount: <%= order.totalAmount %></span>
                                             </div>
-                                            <!-- <form action="/orders/<%= order._id %>/invoice" method="GET">
-                                                         <button type="submit" class="btn btn-primary">Download Invoice</button>
-                                                   </form> -->
+                                            <form action="/orders/<%= order._id %>/invoice" method="GET">
+                                                <button type="submit" class="btn btn-primary">Download Invoice</button>
+                                          </form>
                             
                                         </div>
                                     </div>
@@ -408,3 +404,77 @@
 
 
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('User order page loaded');
+
+        // Listen for clicks on the Retry Payment buttons
+        document.querySelectorAll('.retry-payment-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const orderId = button.getAttribute('data-order-id');
+                console.log('Retry payment button clicked for order:', orderId);
+
+                // Make a POST request to your backend to initiate retry payment
+                fetch('/retryPayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ orderId })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (!res.success) {
+                        console.error('Failed to initiate retry payment:', res.message);
+                        alert('Failed to initiate retry payment.');
+                        return;
+                    }
+                    
+                    console.log("Razorpay order data", res);
+                    const options = {
+										"key": "rzp_test_K8UOfpQbtMjHOa",
+										"amount": res.order.amount,
+										"currency": "INR",
+										"name": 'BAGSON', 
+										"description": "Test Transaction",
+										"image": "",
+										"order_id": res.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+										"callback_url": `/retrysucces?orderId=${orderId}`,
+										"prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+											// "name": "Gaurav Kumar", //your customer's name
+											// "email": "",
+											// "contact": "" //Provide the customer's phone number for better conversion rates 
+										},
+										"notes": {
+											"address": "Razorpay Corporate Office"
+										},
+										"theme": {
+											"color": "#3399cc"
+										}
+									};
+                                    const rzp1 = new Razorpay(options);
+                                    rzp1.on('payment.failed', function (response) {
+										console.error("Payment failed:", response);
+										alert("Payment failed. Redirecting to orders page.");
+										console.log("is it");
+
+
+										// Call a backend endpoint to update the order status
+										
+                                            
+											window.location.href = '/userorders'; // Redirect to the orders page
+										
+											console.error("Error updating order status:", error);
+										
+									});
+                                    rzp1.open();
+                }).catch(error => {
+                    console.error("Error in Razorpay payment:", error);
+                  
+                });
+            })
+        })
+    })
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>

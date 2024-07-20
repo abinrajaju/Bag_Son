@@ -77,6 +77,114 @@
     .page-btn:hover {
       background-color: #f0f0f0;
     }
+    .product-center {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* Or use space-around */
+}
+
+.product-item {
+  flex: 1 1 calc(25% - 20px); /* 4 items per row with some margin */
+  margin: 10px;
+  border: 1px solid #ccc; /* Stroke */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow */
+  transition: box-shadow 0.3s ease; /* Smooth transition for shadow */
+}
+
+.product-item:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+}
+
+.product-item .overlay {
+  position: relative;
+}
+
+.product-item .product-thumb img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.product-item .product-info {
+  padding: 15px;
+}
+
+.product-item .product-info span a {
+  color: #333;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.product-item .product-info h4,
+.product-item .product-info h5 {
+  margin: 10px 0;
+}
+
+.product-item .icons {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0 0;
+}
+
+.product-item .icons li {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.product-item .icons li i {
+  font-size: 20px;
+  color: #333;
+}
+
+.product-center {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Four columns per row */
+    gap: 20px; /* Space between items */
+  }
+
+  .product-item {
+    display: flex;
+    flex-direction: column; /* Arrange children vertically */
+    justify-content: space-between; /* Distribute space evenly */
+    height: 100%; /* Ensure all items have the same height */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adding shadow */
+    border: 1px solid #ddd; /* Adding border */
+    padding: 10px; /* Adding padding */
+    background-color: #fff; /* Background color */
+  }
+
+  .overlay img {
+    width: 100%; /* Ensure images fit their container */
+    height: auto;
+  }
+
+  .product-info {
+    text-align: center; /* Center text inside product info */
+    flex-grow: 1; /* Allow product info to grow and take up available space */
+  }
+
+  .icons {
+    display: flex;
+    justify-content: space-around; /* Distribute icons evenly */
+    list-style: none;
+    padding: 0;
+    margin-top: 10px; /* Add some space above the icons */
+  }
+
+  .icons li {
+    display: inline;
+  }
+
+  .product_details-original-price {
+    text-decoration: line-through;
+    color: gray;
+  }
+
+  .product_details-discount {
+    color: green;
+  }
 </style>
 
 <body>

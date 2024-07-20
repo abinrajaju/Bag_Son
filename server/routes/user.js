@@ -41,6 +41,7 @@ route.get('/viewmoreorder',check.active,product.pagination)
 
 
 
+
 //user profile
 route.get('/profile',check.checklog,profile.profile)
 route.get('/useraddress',check.active,profile.address)
@@ -78,13 +79,16 @@ route.get('/forgot-resend',controller.forgot_resent)
 
 //checkout 
 route.get('/checkout',check.active,checkout.get_checkout)
-route.post('/stockresult',check.active,checkout.oder_place)
+route.post('/stockresult',check.active,checkout.cod)
 route.post('/verifyStock',check.active,checkout.check_stock)
 route.get('/thankyou',check.active,checkout.placed)
 route.post('/razorpayment',check.active,checkout.onlinepayment)
 route.post('/onlinepayment',check.active,checkout.onlinepayed)
 route.post('/walletpay',check.active,checkout.walletpay)
 route.post('/applyCoupon',check.active,checkout.apply_coupon)
+route.post('/failurePayment',check.active,checkout.failpayment)
+route.post('/retryPayment',check.active,checkout.retrypayment)
+route.post('/retrysucces',check.active,checkout.paymentSucces)
 route.all('*',(req,res,next)=>{
     res.redirect('/error500')
 })
