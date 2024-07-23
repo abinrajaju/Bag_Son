@@ -26,6 +26,24 @@ const profile=async(req,res)=>{
 }
 
 
+const editProfile=async(req,res)=>{
+    try {
+        const userdetail = await userdb.findOne({ email: req.session.email })
+        const userId = req.params.id;
+
+        const updatedData = req.body;
+        const updateData = await userdb.findByIdAndUpdate(userId, updatedData, userdetail, { new: true })
+        await updateData.save()
+        res.redirect('/profile')
+
+    } catch (error) {
+        console.log(error);
+        res.render('error500')
+
+    }
+}
+
+
 const address=async(req,res)=>{
     
     
@@ -38,6 +56,12 @@ const address=async(req,res)=>{
         console.log(err);
         redirect('/error500')
     }
+}
+
+
+
+const editAdress=async(req,res)=>{
+    
 }
 
 const userorders= async(req,res)=>{
@@ -316,7 +340,7 @@ const retur= async(req,res)=>{
 
 module.exports={
     profile,address,userorders,wishlisted,add_wishlist,remove_wishlist,get_address,add_address,delete_address,cancelOrder,
-    getwallet,orderDetail,retur
+    getwallet,orderDetail,retur,editProfile
 
 
 }

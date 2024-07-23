@@ -34,6 +34,7 @@ route.post('/outsort',check.active,product.Catasort)
 route.post('/allshop',check.active,product.nocata)
 route.post('/search',check.active,product.search)
 route.get('/viewmoreorder',check.active,product.pagination)
+route.get('/allviewmoreorder',product.allpage)
 
 
 
@@ -57,6 +58,8 @@ route.get('/wallethistory',check.active,profile.getwallet)
 route.get('/orderDetail/:id',check.active,profile.orderDetail)
 route.get('/returnOrder/:id',check.active,profile.retur)
 route.get('/orders/:orderId/invoice',check.active,invoice.generateOrderInvoice)
+route.post('/update-user/:id',check.active,profile.editProfile)
+route.get('/update-address')
 
 
 //cart

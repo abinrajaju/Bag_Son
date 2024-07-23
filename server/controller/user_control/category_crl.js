@@ -133,13 +133,15 @@ const allproduct=async(req,res)=>{
 
 const shopeCata=async(req,res)=>{
     try{
-     const category=req.body.items
-     
+     const categoryId=req.body.items
+     const category = await categorydb.findById(categoryId)
+     let pages = await productdb.countDocuments({ Category: category.id});
+     pages = Math.ceil(pages/8)
      const products = await productdb.find({ Category: category,list:'listed' }).populate('Category').limit(8).sort({_id : -1 });
      for (const product of products) {
         await applyoffer(product);
     }
-      res.status(200).json(products)
+      res.status(200).json({products,pages})
         
          
     
@@ -155,38 +157,42 @@ const shopeCata=async(req,res)=>{
  const sort_product=async(req,res)=>{
     try {
        
-        let sortedProducts
+        let sortedProducts=await productdb.find()
         const sortBySelect = req.body.selsect;
         const categoryId=req.body.selectedItemId
         const category = await categorydb.findById(categoryId)
-        
-       
+        let pages = await productdb.countDocuments({Category: category.id});
+           pages = Math.ceil(pages/8)
+
+           for (const sortedProduct of sortedProducts) {
+            await applyoffer(sortedProduct);
+        }
          
         switch(sortBySelect){
+            case '1':next = await productdb.find({ Category: category.id,list:'listed' }).limit(8).skip(jump).populate("Category");
+                break;
             case '2': 
-                    sortedProducts = await productdb.find({ Category: category.id,list:'listed' }).sort({ price: 1 }).populate("Category");
+                    sortedProducts = await productdb.find({ Category: category.id,list:'listed' }).sort({ price: 1,offerPrice:-1,discount:-1 }).limit(8).populate("Category");
                   
                 break;
             case '3':
-                    sortedProducts = await productdb.find({ Category: category.id,list:'listed' }).sort({ price: -1 }).populate("Category");
+                    sortedProducts = await productdb.find({ Category: category.id,list:'listed' }).sort({ price: -1,offerPrice:-1,discount:-1 }).limit(8).populate("Category");
                 break;
             case '4':
-                    sortedProducts = await productdb.find({ Category: category.id,list:'listed' }).sort({ product_name: 1 }).populate("Category");
+                    sortedProducts = await productdb.find({ Category: category.id,list:'listed' }).sort({ product_name: 1 }).limit(8).populate("Category");
                     break;
             case '5':
-                    sortedProducts = await productdb.find({ Category: category.id,list:'listed' }).sort({ product_name: -1 }).populate("Category");
+                    sortedProducts = await productdb.find({ Category: category.id,list:'listed' }).sort({ product_name: -1 }).limit(8).populate("Category");
                 break;    
             case '6':
-                sortedProducts = await productdb.find({ Category: category.id,list:'listed' }).sort({ _id: -1 }).populate("Category");
+                sortedProducts = await productdb.find({ Category: category.id,list:'listed' }).sort({ _id: -1 }).limit(8).populate("Category");
                 break;
             default:
-                sortedProducts = await productdb.find({ Category: category.id, list:'listed'}).populate("Category");
-        }
-        for (const sortedProduct of sortedProducts) {
-            await applyoffer(sortedProduct);
+                sortedProducts = await productdb.find({ Category: category.id, list:'listed'}).limit(8).populate("Category");
         }
         
-        res.json(sortedProducts)
+        
+        res.json({sortedProducts,pages})
         res.status(200)
     } catch (error) {
         console.log(error);
@@ -198,35 +204,41 @@ const shopeCata=async(req,res)=>{
 const Catasort=async(req,res)=>{
 try {             
 
-        let sortedProducts
-        const sortBySelect = req.body.selsect;
        
+        const sortBySelect = req.body.selsect;
+         let sortedProducts= await productdb.find()
+        for (const sortedProduct of sortedProducts) {
+            await applyoffer(sortedProduct);
+        }
+        let pages = await productdb.countDocuments();
+        pages = Math.ceil(pages/8)
 
             switch(sortBySelect){
+                case '1':next = await productdb.find({list:'listed' }).limit(8).skip(jump).populate("Category");
+                    break;
                 case '2': 
-                        sortedProducts = await productdb.find({ list:'listed' }).sort({ price: 1 })
+                        sortedProducts = await productdb.find({ list:'listed' }).sort({ price: 1,offerPrice:1,discount:1 }).limit(8)
                       
                     break;
                 case '3':
-                        sortedProducts = await productdb.find({ list:'listed' }).sort({ price: -1 })
+                        sortedProducts = await productdb.find({ list:'listed' }).sort({ price: -1,offerPrice:-1,discount:-1 }).limit(8)
                     break;
                 case '4':
-                        sortedProducts = await productdb.find({ list:'listed' }).sort({ product_name: 1 })
+                        sortedProducts = await productdb.find({ list:'listed' }).sort({ product_name: 1 }).limit(8)
                         break;
                 case '5':
-                        sortedProducts = await productdb.find({ list:'listed' }).sort({ product_name: -1 })
+                        sortedProducts = await productdb.find({ list:'listed' }).sort({ product_name: -1 }).limit(8)
                     break;    
                 case '6':
-                    sortedProducts = await productdb.find({ list:'listed' }).sort({ _id: -1 })
+                    sortedProducts = await productdb.find({ list:'listed' }).sort({ _id: -1 }).limit(8)
                     break;
                 default:
-                    sortedProducts = await productdb.find({ list:'listed' })
-            }
-            for (const sortedProduct of sortedProducts) {
-                await applyoffer(sortedProduct);
+                    sortedProducts = await productdb.find({ list:'listed' }).limit(8)
             }
             
-            res.json(sortedProducts)
+            
+            
+            res.json({sortedProducts,pages})
             res.status(200)
 
           
@@ -238,15 +250,22 @@ try {
 }
 
 
+       
+
+
 const nocata= async(req,res)=>{
     try{
         const category=req.body.items
         
-        const products = await productdb.find({ list:'listed' }).limit(8).sort({_id : -1 });
+        const products = await productdb.find({list:'listed'}).populate("Category").limit(8).sort({_id : -1 });
+        let pages = await productdb.countDocuments();
+        pages = Math.ceil(pages/8)
         for (const product of products) {
             await applyoffer(product);
         }
-         res.status(200).json(products)
+
+        
+         res.status(200).json({products,pages})
            
             
        
@@ -284,60 +303,95 @@ const search=async(req,res)=>{
      }
 }
 
+const allpage=async(req,res)=>{
+    const{page,cata,sort}=req.query
 
-const pagination=async(req,res)=>{
-
- const page = req.query.page;
     let jump = (page-1) * 8;
-    const next = await productdb.find({list:'listed'}).populate("Category").limit(8).skip(jump).sort({_id : -1 });
+    let next= await productdb.find()
+    for (const sortedProduct of next) {
+        await applyoffer(sortedProduct);
+    }
+
+    switch(sort){
+        case '1':next = await productdb.find({ list:'listed' }).limit(8).skip(jump).populate("Category");
+             break;
+        case '2': 
+                  next  = await productdb.find({ list:'listed' }).sort({ price: 1,offerPrice:1,discount:1  }).limit(8).skip(jump).populate("Category");
+              
+            break;
+        case '3':
+                next = await productdb.find({ list:'listed' }).sort({ price: -1,offerPrice:-1,discount:-1 }).limit(8).skip(jump).populate("Category");
+            break;
+        case '4':
+                next = await productdb.find({ list:'listed' }).sort({ product_name: 1 }).limit(8).skip(jump).populate("Category");
+                break;
+        case '5':
+                next = await productdb.find({list:'listed' }).sort({ product_name: -1 }).limit(8).skip(jump).populate("Category");
+            break;    
+        case '6':
+            next = await productdb.find({list:'listed' }).sort({ _id: -1 }).limit(8).skip(jump).populate("Category");
+            break;
+        default:
+            next = await productdb.find({ list:'listed'}).populate("Category");
+    }
+    
     return res.status(200).json({ next});
 }
 
 
+const pagination=async(req,res)=>{
+    
+ 
+ 
+ const{page,cata,sort}=req.query
 
-const addtowish=async(req,res)=>{
-    try {
-        const productId = req.body.Id;
-        const user = await userdb.findOne({ email: req.session.email });
-        let userWish = await wishlistdb.findOne({ user:user._id});
-        if (!userWish) {
-            userWish = new wishlistdb({
-                user: user._id,
-                items: [{ productId: productId }]
-            });
-            await userWish.save();
-            res.json({message:'added'})
-        
-        } else {
-            if (userWish.items.some(items=>items.productId.toString()===productId.toString())){
-                const itemIndex = userWish.items.findIndex(item => item.productId.toString() === productId);
+ let jump = (page-1) * 8;
+ 
+ let next= await productdb.find()
+ for (const sortedProduct of next) {
+     await applyoffer(sortedProduct);
+ }
 
-        if (itemIndex === -1) {
-            return res.status(404).render('error500');
-        }
-
-                 userWish.items.splice(itemIndex, 1);
-
-                    await userWish.save();
-                res.json({message:'removed'})
-            }else{
-           userWish.items.push({ productId: productId});
-           await userWish.save() 
-           res.json({message:'added'})
-                
-            //    res.redirect('/wishlisted')
-             
-            }}
-       
-
-        
+ 
+    const category = await categorydb.findById(cata)
+    switch(sort){
+        case '1':next = await productdb.find({ Category: category.id,list:'listed' }).limit(8).skip(jump).populate("Category");
+             break;
+        case '2': 
+                  next  = await productdb.find({ Category: category.id,list:'listed' }).sort({price: 1,offerPrice:1,discount:1 }).limit(8).skip(jump).populate("Category");
+              
+            break;
+        case '3':
+                next = await productdb.find({ Category: category.id,list:'listed' }).sort({price: -1,offerPrice:-1,discount:1  }).limit(8).skip(jump).populate("Category");
+            break;
+        case '4':
+                next = await productdb.find({ Category: category.id,list:'listed' }).sort({ product_name: 1 }).limit(8).skip(jump).populate("Category");
+                break;
+        case '5':
+                next = await productdb.find({ Category: category.id,list:'listed' }).sort({ product_name: -1 }).limit(8).skip(jump).populate("Category");
+            break;    
+        case '6':
+            next = await productdb.find({ Category: category.id,list:'listed' }).sort({ _id: -1 }).limit(8).skip(jump).populate("Category");
+            break;
+        default:
+            next = await productdb.find({ Category: category.id, list:'listed'}).populate("Category");
     }
-    catch (error) {
-        console.error( error)
+    
+    return res.status(200).json({ next});
 
-    }
 }
 
+
+ 
+    
+    // const next = await productdb.find({list:'listed'}).populate("Category").limit(8).skip(jump).sort({_id : -1 });
+    // return res.status(200).json({ next});
+
+
+
+
+
+
 module.exports={
-    men,kid,women,allproduct,shopeCata,sort_product,Catasort,nocata,search,pagination
+    men,kid,women,allproduct,shopeCata,sort_product,Catasort,nocata,search,pagination,allpage
 }
