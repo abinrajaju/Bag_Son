@@ -1,0 +1,131 @@
+<%- include('includes/header') -%>
+
+<!-- navbar -->
+<%- include('includes/navbr') -%>
+
+<div class="container-fluid ms-md-4 mt-4">
+    <div class="row">
+        <div class="col-md-3 col-sm-6 account-nav rounded shadow">
+            <div class="row">
+                <div class="col-4"><label for="name"><%= user.name %></label></div>
+                <div class="col-8"><a class="nav-link" href="/cart">
+                    <i class="fa-solid fa-wallet me-1"></i>Wallet Amount : <%= user.walletAmount%></a></div>
+                </div>
+            <hr>
+            <ul class="list-unstyled">
+                <li>
+                    <a href="/useraccount" class="text-decoration-none text-dark">Profile</a>
+                </li>
+                <li>
+                    <a href="/useraddress" class="text-decoration-none text-white bg-primary d-block py-2 rounded">Addresses</a>
+                </li>
+                <li>
+                    <a href="/userorders" class="text-decoration-none text-dark">My Orders</a>
+                </li>
+                <li>
+                    <a href="/wishlisted" class="text-decoration-none text-dark">My Wishlist</a>
+                </li>
+                <li>
+                    <a href="/wallethistory" class="text-decoration-none text-dark">Wallet History</a>
+                </li>
+                <li>
+                    <a href="/forgot-otp" class="text-decoration-none text-dark">Forgot Password</a>
+                </li>
+                <hr>
+                <li>
+                    <a href="/userlogout" class="text-decoration-none text-danger">Logout</a>
+                </li>
+            </ul>
+            
+        </div>
+        <div class="col-md-9 account-content">
+            <div class="container rounded p-4" style="background-color: rgb(235, 249, 249);">
+                <h2 class="mb-4">EDIT ADDRESS</h2>
+                <form action="/editaddress/<%= address.id %>" method="post" onsubmit="return validateForm()">
+                    <input type="hidden" id="user_id" name="id" value="<%= user.id %>">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                              <input type="text" class="form-control border-0 border-bottom rounded-0" name="name" id="name" placeholder="Name" value="<%= address.name %>" required>
+                              <!-- <label for="name" class="form-label">Name</label> -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                              <input type="text" class="form-control border-0 border-bottom rounded-0" name="mob" id="mob" value="<%= address.mobileNumber %>" placeholder="Mobile Number" required>
+                              <!-- <label for="number" class="form-label">10-digit mobile number</label> -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                              <input type="number" class="form-control border-0 border-bottom rounded-0" name="pin" id="pin" value="<%= address.pincode %>" placeholder="Pincode" required>
+                              <!-- <label for="pincode" class="form-label">Pincode</label> -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                              <input type="text" class="form-control border-0 border-bottom rounded-0" name="locality" id="locality" value="<%= address.locality %>" placeholder="Locality" required>
+                              <!-- <label for="locality" class="form-label">Locality</label> -->
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating mb-3">
+                                <textarea class="form-control" id="address" name="address" ><%= address.address %></textarea>
+                                <!-- <label for="address" class="form-label">Address (Area and Street):</label> -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                              <input type="text" class="form-control border-0 border-bottom rounded-0" name="district" id="district" value="<%= address.district %>" placeholder="District" required>
+                              <!-- <label for="district" class="form-label">City/District/Town</label> -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <select class="form-select border-0 border-bottom rounded-0" name="state" id="state" required>
+                                    <option value="" disabled>Select State</option>
+                                    <option value="Kerala" <%= address.state === 'Kerala' ? 'selected' : '' %>>Kerala</option>
+                                    <option value="Tamilnadu" <%= address.state === 'Tamilnadu' ? 'selected' : '' %>>Tamilnadu</option>
+                                    <option value="Karnataka" <%= address.state === 'Karnataka' ? 'selected' : '' %>>Karnataka</option>
+                                    <!-- Add more options as needed -->
+                                </select>
+                                <!-- <label for="state" class="form-label">State</label> -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                              <input type="text" class="form-control border-0 border-bottom rounded-0" name="landmark" id="landmark" value="<%= address.landmark %>" placeholder="Landmark">
+                              <!-- <label for="landmark" class="form-label">Landmark(Optional)</label> -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                              <input type="text" class="form-control border-0 border-bottom rounded-0" name="phone" id="phone" value="<%= address.alternateMobile %>" placeholder="Alternate Phone">
+                              <!-- <label for="phone" class="form-label">Alternate Phone (Optional)</label> -->
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group d-inline-flex">
+                             <label for="type" class="text-dark">Address Type :</label>
+                             <div class="radio ms-2">
+                                <input type="radio" id="radio2" name="addressType" value="home" <% if(address.addressType == "home") { %> checked <% } %> >
+                              <label for="type" class="text-dark">Home</label>
+                             </div>
+                             <div class="radio ms-2">
+                                <input type="radio" id="radio3" name="addressType" value="work" <% if(address.addressType == "work") { %> checked <% } %>>
+                              <label for="type" class="text-dark">Work</label>
+                             </div>
+                            </div>
+                          </div><br><br>
+                    <div class="col-md-3"><button type="submit" class="btn btn-primary mt-2 w-75">SAVE</button></div>
+                    <div class="col-md-3"><a href="/useraddress" class="btn btn-secondary mt-2 ms-md-2 w-75">CANCEL</a></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('includes/userFooter') -%>
+
+<%- include('includes/footer') -%>
