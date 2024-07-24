@@ -25,7 +25,7 @@ const get_checkout= async(req,res)=>{
     const products=await cartdb.findOne({user:user._id}).populate('items.productId')
     const applicableCoupons= await coupondb.find()
     const address=await addressdb.find({user:user._id})
-    const wallet=await walletdb.findOne({user:user._id})
+    const wallet=await walletdb.findOne({user:user._id})|| { balance: 0, transactions: [] };
     console.log(wallet);
    
     res.render('user/checkout',{address,products,applicableCoupons,wallet})

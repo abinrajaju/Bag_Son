@@ -16,7 +16,7 @@ const profile=async(req,res)=>{
    
     const userToken= req.cookies.userToken
     const user= await userdb.findOne({email:req.session.email})
-    const wallet= await walletdb.findOne({user:user})
+    const wallet= await walletdb.findOne({user:user})|| { balance: 0, transactions: [] };
     
     res.render('user/profile',{user,userToken,wallet})
    }catch(err){
@@ -54,7 +54,7 @@ const address=async(req,res)=>{
     res.render('user/address',{user,addresses})
     }catch(err){
         console.log(err);
-        redirect('/error500')
+       res.redirect('/error500')
     }
 }
 
@@ -323,7 +323,16 @@ const getwallet=async(req,res)=>{
     try{
         
         const user= await userdb.findOne({email:req.session.email})
-        const wallet= await walletdb.findOne({user:user})
+        let wallet= await walletdb.findOne({user:user});
+        if (!wallet) {
+            wallet = new walletdb({
+                user: user._id,
+                transactions: []
+            });
+            await wallet.save();
+        }
+
+        wallet= await walletdb.findOne({user:user});
         wallet.transactions.reverse()
         res.render('user/wallethistory',{walletHistory:wallet,user})
 

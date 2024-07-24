@@ -23,7 +23,7 @@ const list=async(req,res)=>{
 
 
  const get_add=async(req,res)=>{
-    res.render('admin/add_category')
+    res.render('admin/add_category',{message:""})
  }
 
  const user_detail = async (req, res) => {
@@ -48,18 +48,26 @@ const add_category=async(req,res)=>{
     try{
         
         if(!req.body){
-            res.status(400).send({messege:'content cannot be empty'})
+            res.status(400).send({message:'content cannot be empty'})
             return;
         }
-        let category = await Categorydb.findOne({CategoryName:req.body.CategoryName})
+        const { CategoryName, discription } = req.body;
+
+        if (!CategoryName || CategoryName.trim() === '') {
+            return res.status(400).render('addcategory', { message: 'Category name cannot be empty' });
+        }
+        const trimmedCategoryName = CategoryName.trim();
+        let category = await Categorydb.findOne({
+            CategoryName: { $regex: new RegExp(`^${trimmedCategoryName}$`, 'i') }
+        });
         
         if(category){
-            res.render('admin/add_category',{messege:'category already exist'})
+            res.render('admin/add_category',{message:'category already exist'})
             return;
         }else{
             const newCategory= new Categorydb({
-                CategoryName:req.body.CategoryName,
-                description:req.body.discription
+                CategoryName:CategoryName,
+                description:discription
             })
            
             await newCategory.save();
@@ -85,7 +93,9 @@ const get_edit=async(req,res)=>{
         const updateData=req.body
         
         const get = await Categorydb.findById(categoryId)
-        const categorysame=await Categorydb.findOne({CategoryName:updateData.CategoryName})
+        const categorysame=await Categorydb.findOne({
+            CategoryName: { $regex: new RegExp(`^${trimmedCategoryName}$`, 'i') }
+        });
         if(categorysame){
             return res.render('admin/edit_category',{get,message:'category already exist'})
         }

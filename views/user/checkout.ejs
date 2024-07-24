@@ -87,28 +87,32 @@
                                         <p class="text-muted text-truncate mb-4"></p>
                                         <div class="mb-3" id="address">
                                             <div class="row">
-                                                <% address.forEach((item, index) => { %>
-                                                <div class="col-lg-4 col-sm-6">
-                                                    <div>
-                                                        <label class="card-radio-label mb-0">
-                                                            <input type="radio" name="address" id="info-address-<%= index %>" value="<%= item._id %>" class="card-radio-input">
-                                                            <div class="card-radio text-truncate p-3">
-                                                                <span class="fs-14 mb-2 d-block"> <%= item.name %></span>
-                                                                <span class="text-muted fw-normal text-wrap mb-1 d-block">
-                                                                    Address: <%= item.address %>, <%= item.locality %>, <%= item.district %>, <%= item.state %> - <%= item.pincode %>
-                                                                </span>
-                                                                <span class="text-muted fw-normal d-block">Mo. <%= item.mobileNumber %></span>
-                                                            </div>
-                                                        </label>
-                                                        <div class="edit-btn bg-light rounded">
-                                                            <a href="/useraddress" data-bs-toggle="tooltip" data-placement="top" title data-bs-original-title="Edit">
-                                                                <i class="bx bx-pencil font-size-16"></i>
-                                                            </a>
-                                                        </div>
+                                                <% if (address.length === 0) { %>
+                                                    <div class="col-12">
+                                                        <div id="errorMessage" style="color: rgb(0, 0, 0);">No addresses available</div>
                                                     </div>
-                                                </div>
-                                                <% }) %>
-                                                <div id="errorMessage"></div>
+                                                <% } else { %>
+                                                    <% address.forEach((item, index) => { %>
+                                                        <div class="col-lg-4 col-sm-6">
+                                                            <div>
+                                                                <label class="card-radio-label mb-0">
+                                                                    <input type="radio" name="address" id="info-address-<%= index %>" value="<%= item._id %>" class="card-radio-input">
+                                                                    <div class="card-radio text-truncate p-3">
+                                                                        <span class="fs-14 mb-2 d-block"> <%= item.name %></span>
+                                                                        <span class="text-muted fw-normal text-wrap mb-1 d-block">
+                                                                            Address: <%= item.address %>, <%= item.locality %>, <%= item.district %>, <%= item.state %> - <%= item.pincode %>
+                                                                        </span>
+                                                                        <span class="text-muted fw-normal d-block">Mo. <%= item.mobileNumber %></span>
+                                                                        <a href='/update-address?id=<%= item._id %>' data-bs-toggle="tooltip" data-placement="top" title data-bs-original-title="Edit">
+                                                                            <i class="bx bx-pencil font-size-16"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    <% }) %>
+                                                    <div id="errorMessage" style="color: red;"></div>
+                                                <% } %>
                                             </div>
                                         </div>
                                     </div>
@@ -383,14 +387,18 @@
                
 				items.push({ productId, quantity });
 			});
-           
+            const errorMessageElement = document.getElementById('errorMessage');
+            const selectedAddressElement = document.querySelector('#address input[name="address"]:checked');
+            if (!selectedAddressElement) {
+                errorMessageElement.innerHTML = 'Please select an address';
+                return;
+            }
             
             const selectedAddress= document.querySelector('#address input[name="address"]:checked').value;
+            
+            
            
-            if (!selectedAddress) {
-				document.getElementById('errorMessage').innerHTML = 'Please Add the Address'
-				return
-			}
+          
             const paymentMethod = document.querySelector('input[name="pay"]:checked').value;
             console.log('paymentMethod',paymentMethod);
             fetch("/verifyStock", {
