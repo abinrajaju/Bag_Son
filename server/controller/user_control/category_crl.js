@@ -51,7 +51,7 @@ const men= async(req,res)=>{
         for (const product of products) {
             await applyoffer(product);
         }
-        res.render('user/products',{products,category,pages:0})
+        res.render('user/products',{products,category,pages:0,wishCount:0,cartCount:0})
     
     }catch(err){
         console.error(err);
@@ -69,7 +69,7 @@ const women= async(req,res)=>{
         await applyoffer(product);
     }
     
-    res.render('user/products',{products,category,pages:0})
+    res.render('user/products',{products,category,pages:0,wishCount:0,cartCount:0})
     
     }catch(err){
         console.error(err);
@@ -87,7 +87,7 @@ const kid= async(req,res)=>{
         await applyoffer(product);
     }
     
-    res.render('user/products',{products,category,pages:0})
+    res.render('user/products',{products,category,pages:0,wishCount:0,cartCount:0,cartCount:0})
     
     }catch(err){
         console.error(err);

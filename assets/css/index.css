@@ -217,7 +217,7 @@ Hero Area
   background-color: rgb(255, 255, 255);
   position: relative;
   height: calc(90vh - 6rem);
-  margin: 0 4rem;
+  margin: 0;
   overflow: hidden;
 }
 

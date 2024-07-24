@@ -19,18 +19,22 @@
     <title>BAGSON</title>
     
   </head>
-  <style>
-   .product-center {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between; /* Or use space-around */
+ <style>
+ .product-center {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Four columns per row */
+  gap: 20px; /* Space between items */
 }
 
 .product-item {
-  flex: 1 1 calc(25% - 20px); /* 4 items per row with some margin */
-  margin: 10px;
-  border: 1px solid #ccc; /* Stroke */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow */
+  display: flex;
+  flex-direction: column; /* Arrange children vertically */
+  justify-content: space-between; /* Distribute space evenly */
+  height: 100%; /* Ensure all items have the same height */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adding shadow */
+  border: 1px solid #ddd; /* Adding border */
+  padding: 10px; /* Adding padding */
+  background-color: #fff; /* Background color */
   transition: box-shadow 0.3s ease; /* Smooth transition for shadow */
 }
 
@@ -38,97 +42,62 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Shadow on hover */
 }
 
-.product-item .overlay {
-  position: relative;
-}
-
-.product-item .product-thumb img {
-  width: 100%;
+.overlay img {
+  width: 100%; /* Ensure images fit their container */
   height: auto;
-  display: block;
 }
 
-.product-item .product-info {
-  padding: 15px;
+.product-info {
+  text-align: center; /* Center text inside product info */
+  flex-grow: 1; /* Allow product info to grow and take up available space */
 }
 
-.product-item .product-info span a {
-  color: #333;
-  text-decoration: none;
-  font-size: 16px;
-}
-
-.product-item .product-info h4,
-.product-item .product-info h5 {
-  margin: 10px 0;
-}
-
-.product-item .icons {
+.icons {
+  display: flex;
+  justify-content: space-around; /* Distribute icons evenly */
   list-style: none;
   padding: 0;
-  display: flex;
-  justify-content: space-around;
-  margin: 10px 0 0;
+  margin-top: 10px; /* Add some space above the icons */
 }
 
-.product-item .icons li {
-  display: inline-block;
+.icons li {
+  display: inline;
   cursor: pointer;
 }
 
-.product-item .icons li i {
+.icons li i {
   font-size: 20px;
   color: #333;
 }
 
-.product-center {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Four columns per row */
-    gap: 20px; /* Space between items */
-  }
+.product_details-original-price {
+  text-decoration: line-through;
+  color: gray;
+}
 
-  .product-item {
-    display: flex;
-    flex-direction: column; /* Arrange children vertically */
-    justify-content: space-between; /* Distribute space evenly */
-    height: 100%; /* Ensure all items have the same height */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adding shadow */
-    border: 1px solid #ddd; /* Adding border */
-    padding: 10px; /* Adding padding */
-    background-color: #fff; /* Background color */
-  }
+.product_details-discount {
+  color: green;
+}
 
-  .overlay img {
-    width: 100%; /* Ensure images fit their container */
-    height: auto;
+/* Responsive design */
+@media (max-width: 1200px) {
+  .product-center {
+    grid-template-columns: repeat(3, 1fr); /* Three columns per row */
   }
+}
 
-  .product-info {
-    text-align: center; /* Center text inside product info */
-    flex-grow: 1; /* Allow product info to grow and take up available space */
+@media (max-width: 900px) {
+  .product-center {
+    grid-template-columns: repeat(2, 1fr); /* Two columns per row */
   }
+}
 
-  .icons {
-    display: flex;
-    justify-content: space-around; /* Distribute icons evenly */
-    list-style: none;
-    padding: 0;
-    margin-top: 10px; /* Add some space above the icons */
+@media (max-width: 600px) {
+  .product-center {
+    grid-template-columns: 1fr; /* One column per row */
   }
-
-  .icons li {
-    display: inline;
-  }
-
-  .product_details-original-price {
-    text-decoration: line-through;
-    color: gray;
-  }
-
-  .product_details-discount {
-    color: green;
-  }
-  </style>
+}
+</style>
   
   <body>
     
