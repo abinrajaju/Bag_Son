@@ -48,10 +48,11 @@ const men= async(req,res)=>{
         const Category=await categorydb.findOne({CategoryName:'men'});
         const category=await categorydb.find();
         const products=await productdb.find({Category:Category._id,}).populate('Category')
+        
         for (const product of products) {
             await applyoffer(product);
         }
-        res.render('user/products',{products,category,pages:0,wishCount:0,cartCount:0})
+        res.render('user/products',{products,category,pages:0,wishCount:0,cartCount:0,wishlist:0})
     
     }catch(err){
         console.error(err);
@@ -69,7 +70,7 @@ const women= async(req,res)=>{
         await applyoffer(product);
     }
     
-    res.render('user/products',{products,category,pages:0,wishCount:0,cartCount:0})
+    res.render('user/products',{products,category,pages:0,wishCount:0,cartCount:0,wishlist:0})
     
     }catch(err){
         console.error(err);
@@ -87,7 +88,7 @@ const kid= async(req,res)=>{
         await applyoffer(product);
     }
     
-    res.render('user/products',{products,category,pages:0,wishCount:0,cartCount:0,cartCount:0})
+    res.render('user/products',{products,category,pages:0,wishCount:0,cartCount:0,cartCount:0,wishlist:0})
     
     }catch(err){
         console.error(err);
@@ -118,9 +119,9 @@ const allproduct=async(req,res)=>{
             await applyoffer(product);
         }
         
-            res.render('user/products',{products,wishCount,cartCount,category,pages})
+            res.render('user/products',{products,wishCount,cartCount,category,pages,wishlist})
       }else{
-        res.render('user/products',{products,wishCount:0,cartCount:0,category,pages})
+        res.render('user/products',{products,wishCount:0,cartCount:0,category,pages,wishlist:0})
       }
         
     }catch(err){

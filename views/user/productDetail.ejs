@@ -284,10 +284,10 @@
           </div>
           <ul class="icons">
             <% if (wishlist && wishlist.items.some(items=>items.productId.toString()===product._id.toString())) { %>
-            <li style="background-color: brown;"><i class="bx bx-heart"></i></li>
-            <% } else { %>
-              <li ><i class="bx bx-heart"></i></li>
-              <% } %>
+              <li style="background-color: brown;"><a href="/wishlisted"><i class="bx bx-heart"></i></a></li>
+              <% } else { %>
+                <li  ><a href="wishlist/<%=product._id %>"><i class="bx bx-heart" ></i></a></li>
+                <% } %>
             <li><a href="/productdetail?id=<%=product._id  %>"><i class="bx bx-search"></i></a></li>
             <li><a href="cart/<%=product._id %>"><i class="bx bx-cart"></i></a></li>
           </ul>

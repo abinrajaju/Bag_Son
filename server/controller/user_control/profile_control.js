@@ -157,7 +157,7 @@ const add_wishlist=async(req,res)=>{
            userWish.items.push({ productId: productId});
            await userWish.save() 
                 
-            //    res.redirect('/wishlisted')
+           res.redirect('/wishlisted')
              
             }
         

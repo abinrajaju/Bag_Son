@@ -18,7 +18,7 @@ require('./server/middleware/auth')
 
 
 dotenv.config({ path: 'config.env' })
-const port = process.env.port || 2001
+const port = process.env.port || 4108
 connectDB()
 
 app.set("view engine", "ejs")
