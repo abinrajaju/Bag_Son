@@ -20,10 +20,10 @@
             <a class="nav-text text-decoration-none" href="/kid">Kids</a>
           </li>
         </ul>
-        <form class="d-flex input-group w-auto me-lg-4 me-sm-0 " action="/searchproduct">
+        <!-- <form class="d-flex input-group w-auto me-lg-4 me-sm-0 " action="/searchproduct">
           <input id="search" type="search" name="search" class="form-control rounded-start" size="40" placeholder="Search Products" aria-label="Search" autocomplete="off" />
           <button id="search-button" type="submit" class="btn btn-outline-dark me-5 border-2">Search</button>
-        </form>
+        </form> -->
 
         <ul class="navbar-nav mx-5 mb-2 mb-lg-0 bg-transparent flex-wrap">
          
@@ -35,22 +35,22 @@
                   <a class="nav-link" href="/cart"><i class="fa-solid fa-cart-shopping"></i></a>
               </li>
               <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <!-- <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       <i class="fa-solid fa-user"></i>
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                  </a> -->
+                  <!-- <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                       <li><a class="dropdown-item text-end" href="#"><%= user.name%></a></li>
                       <li><hr class="dropdown-divider"></li>
                       <li><a class="dropdown-item" href="/useraccount"><i class="fa-regular fa-circle-user me-3"></i>Account</a></li>
                       <li><a class="dropdown-item" href="/userorders"><i class="fa-solid fa-map-location-dot me-3"></i>My Orders</a></li>
                       <li><a class="dropdown-item" href="/useraddress"><i class="fa-regular fa-rectangle-list me-3"></i>My Addresses</a></li>
                       <li><a class="dropdown-item" href="/userlogout"><i class="fa-solid fa-power-off me-3"></i>Logout</a></li>
-                  </ul>
+                  </ul> -->
               </li>  
               <div class="collapse navbar-collapse" id="navbarSupportedContent">      
               <li class="nav-item dropdown ms-3">
-                  <a class="nav-link" href="">
-                      <i class="fa-solid fa-wallet me-1"></i>₹<%= user.walletAmount%>
+                  <a class="nav-link" href="/wallethistory">
+                      <i class="fa-solid fa-wallet me-1"></i>
                   </a>
               </li>
             </div>

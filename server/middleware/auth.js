@@ -16,7 +16,7 @@ const client_ID= process.env.GOOGLE_client
 passport.use(new GoogleStrategy({
     clientID: client_ID,
     clientSecret:client_secret,
-    callbackURL: 'http://localhost:108/auth/google/callback'
+    callbackURL: '/auth/google/callback'
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       let user = await userModel.findOne({ email: profile.emails[0].value });

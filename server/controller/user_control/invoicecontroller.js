@@ -24,12 +24,7 @@ const generateOrderInvoice = async (req, res) => {
     doc.pipe(stream);
     
     // Add logo
-    const logoPath = path.join(__dirname, 'uplode/logo');
-    if (fs.existsSync(logoPath)) {
-        doc.image(logoPath, 50, 45, { width: 50 });
-    } else {
-        console.error('Logo image not found at', logoPath);
-    }
+   
     
     doc.moveDown();
     

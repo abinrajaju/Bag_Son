@@ -19,7 +19,7 @@ const generateOrderInvoice = async (req, res) => {
     const stream = fs.createWriteStream(filePath);                   
                doc.pipe(stream);                                     
                                                                      
-               // Add logo                                           
+                                                     
                                                                      
                doc.moveDown();                                      
 
@@ -29,8 +29,8 @@ const generateOrderInvoice = async (req, res) => {
                                                                      
                                       .text(`Invoice No.: ${order._id}`, { align: 'right' })   
                                                        
-                                      .text(`Invoice Date: ${new Date().toISOString().split('T')[0]}`, { a>  
-                                             .text(`Due Date: ${new Date().toISOString().split('T')[0]}`, { align>   
+                                      .text(`Invoice Date: ${new Date().toISOString().split('T')[0]}`, { align: 'right' })
+                                             .text(`Due Date: ${new Date().toISOString().split('T')[0]}`,{ align: 'right' })
                                                   .moveDown();                
                                                   // Billed from
                                                   doc.text('Billed From', 50, 160)
@@ -109,7 +109,7 @@ const generateOrderInvoice = async (req, res) => {
                                            
                                                    doc.text(item.quantity, quantityX, position, { width: 50, align: 'right' })
                                                    .text(`Rs.${product.price}`, priceX, position, { width: 80, align: 'right' })
-                                                   .text(`Rs.${product.price * item.quantity}`, amountX, position, { width: 80, align: 'right'>
+                                                   .text(`Rs.${product.price * item.quantity}`, amountX, position, { width: 80, align: 'right'})
                                                 position += (productNameLines.length * 15) > 20 ? (productNameLines.length * 15) : 20;
                                             });
                                         

@@ -21,7 +21,7 @@ const profile=async(req,res)=>{
     res.render('user/profile',{user,userToken,wallet})
    }catch(err){
     console.log(err);
-    redirect('/error500')
+    res.redirect('/error500')
 }
 }
 
@@ -107,7 +107,7 @@ const userorders= async(req,res)=>{
         res.render('user/oders',{user,orders})
     }catch(err){
         console.log(err);
-        redirect('/error500')
+        res.redirect('/error500')
     }
 }
 
@@ -349,7 +349,7 @@ const orderDetail=async(req,res)=>{
         const user= await userdb.findOne({email:req.session.email})
         const wallet= await walletdb.findOne({user:user})
         const order = await orderdb.findById(oderid).populate('items.productId')
-        console.log(order);
+       
         res.render('user/oder_detail',{walletHistory:wallet,user,order})
     } catch (error) {
         console.log(error);

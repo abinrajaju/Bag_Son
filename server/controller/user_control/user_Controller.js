@@ -230,9 +230,7 @@ function generateOTP() {
 }
 
 
-// const otp = async (req, res) => {
-//   res.render('otp')
-// }
+
 
 
 
