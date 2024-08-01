@@ -39,7 +39,7 @@
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl sticky-top" id="navbarBlur" data-scroll="true">
       <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
-          <a class="navbar-brand fw-bolder" href="#">BRODWAY</a>
+          <a class="navbar-brand fw-bolder" href="#">BAGSON</a>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           <ul class="navbar-nav  justify-content-end">
@@ -101,7 +101,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white" href="/allusers">
+              <a class="nav-link text-white" href="/userdetail">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="material-icons opacity-10">person</i>
                 </div>
@@ -109,7 +109,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white active bg-gradient-primary" href="/coupons">
+              <a class="nav-link text-white active bg-gradient-primary" href="/coupon">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="material-icons opacity-10">redeem</i> 
                 </div>
@@ -163,26 +163,34 @@
       <div class="row">
         <%=message%>
         <div class="col-12 col-lg-6  card rounded bg-black">
-        <form action="/editCoupon/<%=get._id %>" method="POST" >
-          <div class="mb-3">
-              <label for="p_name" class="form-label">Category Code:</label>
-              <input type="text" class="form-control"  id="couponcode" name="couponcode" value="<%=get.couponcode %>" required>
-          </div>
-
-       
-          <div class="mb-3">
-            <label for="stat" class="form-label">discountPercentage:</label>
-            <input type="number" class="form-control" id="discountPercentage" name="discountPercentage" value="<%=get.discountPercentage %>" required min="10" max="70">
-        </div>
-        <div class="mb-3">
-          <label for="stat" class="form-label">expireDate:</label>
-          <input type="date" class="form-control" id="expireDate" name="expireDate" value="<%=get.expireDate%>" required>
-      </div>
-      <div class="mb-3">
-          <label for="stat" class="form-label">minPurchaseAmount:</label>
-          <input type="number" class="form-control" id="minPurchaseAmount" name="minPurchaseAmount" value="<%=get.minPurchaseAmount%>" required>
-          <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
+          <form id="couponForm" action="/editCoupon/<%=get._id %>" method="POST">
+            <div class="mb-3">
+              <label for="couponcode" class="form-label">Category Code:</label>
+              <input type="text" class="form-control" id="couponcode" name="couponcode" value="<%=get.couponcode %>">
+              <div class="invalid-feedback" id="couponcode-error"></div>
+            </div>
+          
+            <div class="mb-3">
+              <label for="discountPercentage" class="form-label">Discount Percentage:</label>
+              <input type="number" class="form-control" id="discountPercentage" name="discountPercentage" value="<%=get.discountPercentage %>" min="10" max="70">
+              <div class="invalid-feedback" id="discountPercentage-error"></div>
+            </div>
+          
+            <div class="mb-3">
+              <label for="expireDate" class="form-label">Expire Date:</label>
+              <input type="date" class="form-control" id="expireDate" name="expireDate" value="<%=get.expireDate%>">
+              <div class="invalid-feedback" id="expireDate-error"></div>
+            </div>
+          
+            <div class="mb-3">
+              <label for="minPurchaseAmount" class="form-label">Min Purchase Amount:</label>
+              <input type="number" class="form-control" id="minPurchaseAmount" name="minPurchaseAmount" value="<%=get.minPurchaseAmount%>">
+              <div class="invalid-feedback" id="minPurchaseAmount-error"></div>
+            </div>
+          
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+          
     </div>
       </div>
     
@@ -257,6 +265,78 @@
     }
 </script> 
 <script>
+document.getElementById('couponForm').addEventListener('submit', function(event) {
+  let isValid = true;
+
+  // Clear previous errors
+  document.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+  document.querySelectorAll('.form-control').forEach(el => el.classList.remove('is-invalid'));
+
+  // Validate category code
+  const couponcode = document.getElementById('couponcode');
+  if (couponcode.value.trim() === '') {
+    setError(couponcode, 'Category code is required.');
+    isValid = false;
+  }
+
+  // Validate discount percentage
+  const discountPercentage = document.getElementById('discountPercentage');
+  if (discountPercentage.value < 10 || discountPercentage.value > 70) {
+    setError(discountPercentage, 'Discount percentage must be between 10 and 70.');
+    isValid = false;
+  }
+
+  // Validate expire date
+  const expireDate = document.getElementById('expireDate');
+  const currentDate = new Date().toISOString().split('T')[0];
+  if (expireDate.value === '') {
+    setError(expireDate, 'Expire date is required.');
+    isValid = false;
+  } else if (expireDate.value < currentDate) {
+    setError(expireDate, 'Expire date cannot be in the past.');
+    isValid = false;
+  }
+
+  // Validate min purchase amount
+  const minPurchaseAmount = document.getElementById('minPurchaseAmount');
+  if (minPurchaseAmount.value.trim() === '' || minPurchaseAmount.value <= 0) {
+    setError(minPurchaseAmount, 'Min purchase amount must be greater than zero.');
+    isValid = false;
+  }
+
+  if (!isValid) {
+    event.preventDefault(); // Prevent form submission if validation fails
+  }
+});
+
+function setError(element, message) {
+  const errorElement = document.getElementById(element.id + '-error');
+  element.classList.add('is-invalid');
+  errorElement.textContent = message;
+}
+
+// Real-time validation (optional)
+document.querySelectorAll('.form-control').forEach(input => {
+  input.addEventListener('input', function() {
+    // Clear errors on input
+    this.classList.remove('is-invalid');
+    const errorElement = document.getElementById(this.id + '-error');
+    if (errorElement) {
+      errorElement.textContent = '';
+    }
+
+    // Additional check for expire date to handle real-time past date validation
+    if (this.id === 'expireDate') {
+      const currentDate = new Date().toISOString().split('T')[0];
+      if (this.value < currentDate) {
+        setError(this, 'Expire date cannot be in the past.');
+      }
+    }
+  });
+});
+
+</script>
+<!-- <script>
   function validateForm() {
     // Get the category name input field
     const categoryNameInput = document.getElementById('categoryName');
@@ -306,7 +386,7 @@
     // Prevent form submission before the AJAX request completes
     return false;
   }
-</script>
+</script> -->
 
 
 </body>

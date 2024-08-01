@@ -93,8 +93,8 @@ route.post('/applyCoupon',check.active,checkout.apply_coupon)
 route.post('/failurePayment',check.active,checkout.failpayment)
 route.post('/retryPayment',check.active,checkout.retrypayment)
 route.post('/retrysucces',check.active,checkout.paymentSucces)
-route.all('*',(req,res,next)=>{
-    res.redirect('/error500')
-})
+// route.all('*',(req,res,next)=>{
+//     res.redirect('/error500')
+// })
 
 module.exports=route

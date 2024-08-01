@@ -125,10 +125,46 @@ const unlistOffer = async (req, res) => {
 }
 
 
+const editOffer=async(req,res)=>{
+    const products = await productdb.find({}, 'product_name');
+    const categories = await Categorydb.find({}, 'CategoryName');
+    const id =req.params.id
+    const get= await offerdb.findById(id)
+   
+    const POPproducts = await productdb.findOne({_id:get.product_name});
+   
+    const POPcategories = await Categorydb.findOne({_id:get.category_name});
+    
+     res.render('admin/edit_offer',{get,products, categories, errorMessage: '',POPproducts,POPcategories})
+}
+
+const postedit=async(req,res)=>{
+    try {
+
+        
+        const offerid = req.params.id;
+        
+        const updateData = req.body;
+        console.log(updateData);
+        
+        const updatedData = await offerdb.findByIdAndUpdate(offerid, updateData, { new: true })
+        
+
+        await updatedData.save()
+        res.redirect('/offers')
+
+
+
+    } catch (error) {
+        console.log(error.message);
+        res.redirect('/error500')
+
+    }
+}
 
 
 
 
 module.exports={
-    get_offer,add_offer,adding,unlistOffer
+    get_offer,add_offer,adding,unlistOffer,editOffer,postedit
 }

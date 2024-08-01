@@ -70,6 +70,8 @@ route.get('/offers',check.adminCheck,offer.get_offer)
 route.get ('/addOffer',check.adminCheck,offer.add_offer)
 route.post('/addoffer',check.adminCheck,offer.adding)
 route.get('/offerlist',check.adminCheck,offer.unlistOffer)
+route.get('/offeredit/:id',check.adminCheck,offer.editOffer)
+route.post('/editoffer/:id',check.adminCheck,offer.postedit)
 
 
 

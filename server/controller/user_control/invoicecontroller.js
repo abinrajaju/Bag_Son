@@ -18,13 +18,16 @@ const generateOrderInvoice = async (req, res) => {
 
     const doc = new PDFDocument({ margin: 50 });
     const downloadsFolder = path.join(os.homedir(), 'Downloads');
+    if (!fs.existsSync(downloadsFolder)) {
+      fs.mkdirSync(downloadsFolder);
+    }
     const filePath = path.join(downloadsFolder, `${orderId}.pdf`);
 
     const stream = fs.createWriteStream(filePath);
     doc.pipe(stream);
-    
+
     // Add logo
-   
+    // Add your logic to add a logo here if needed
     
     doc.moveDown();
     
@@ -131,10 +134,6 @@ const generateOrderInvoice = async (req, res) => {
        .text('Thank You for Shopping at BAGSON!', { align: 'center' });
     
     doc.end();
-    
-    
-
-
 
     stream.on('finish', () => {
       res.download(filePath, `${orderId}.pdf`, () => {

@@ -172,19 +172,19 @@
     
                 <div class="mb-3">
                     <label for="discountPercentage" class="form-label">Discount Percentage:</label>
-                    <input type="number" class="form-control" id="discountPercentage" name="discountPercentage" required>
+                    <input type="number" class="form-control" id="discountPercentage" name="discountPercentage" >
                     <span id="discountError" class="error-text"></span>
                 </div>
     
                 <div class="mb-3">
                     <label for="expireDate" class="form-label">Expire Date:</label>
-                    <input type="date" class="form-control" id="expireDate" name="expireDate" required>
+                    <input type="date" class="form-control" id="expireDate" name="expireDate" >
                     <span id="expiryDateError" class="error-text"></span>
                 </div>
     
                 <div class="mb-3">
                     <label for="minPurchaseAmount" class="form-label">Minimum Purchase Amount:</label>
-                    <input type="number" class="form-control" id="minPurchaseAmount" name="minPurchaseAmount" required>
+                    <input type="number" class="form-control" id="minPurchaseAmount" name="minPurchaseAmount" >
                     <span id="minPurchaseError" class="error-text"></span>
                 </div>
     
@@ -195,50 +195,55 @@
     </main>
     
     <script>
-    function validateForm() {
-        var fields = [
-            { id: 'couponcode', error: 'nameError', message: 'Coupon Name is required', regex: /^[a-zA-Z\s]+$/, regexMessage: 'Coupon name should contain only letters and spaces' },
-            { id: 'discountPercentage', error: 'discountError', message: 'Discount Percentage is required', type: 'number', min: 1, max: 100 },
-            { id: 'expireDate', error: 'expiryDateError', message: 'Expiry Date is required' },
-            { id: 'minPurchaseAmount', error: 'minPurchaseError', message: 'Minimum Purchase Amount is required', type: 'number', min: 1 }
-        ];
-    
-        var isValid = true;
-    
-        fields.forEach(function(field) {
-            var element = document.getElementById(field.id);
-            var value = element.value.trim();
-            var errorElement = document.getElementById(field.error);
-            errorElement.textContent = "";
-    
-            if (value === "") {
-                errorElement.textContent = field.message;
-                isValid = false;
-            } else if (field.regex && !value.match(field.regex)) {
-                errorElement.textContent = field.regexMessage;
-                isValid = false;
-            } else if (field.type === 'number') {
-                var num = parseFloat(value);
-                if (isNaN(num) || (field.min !== undefined && num < field.min) || (field.max !== undefined && num > field.max)) {
-                    errorElement.textContent = `Must be a valid number ${field.min !== undefined ? `between ${field.min} and ${field.max || 'above'}` : ''}`;
-                    isValid = false;
-                }
-            }
-        });
-    
-        if (!isValid) return false;
-    
-        var expiryDate = new Date(document.getElementById('expireDate').value);
-        var today = new Date();
-        today.setHours(0, 0, 0, 0);
-        if (expiryDate < today) {
-            document.getElementById('expiryDateError').textContent = "Expiry date cannot be in the past";
-            return false;
-        }
-    
-        return true;
-    }
-    </script>
+      document.addEventListener("DOMContentLoaded", function() {
+          const today = new Date().toISOString().split('T')[0];
+          document.getElementById('expireDate').setAttribute('min', today);
+      });
+
+      function validateForm() {
+          let isValid = true;
+
+          // Clear previous errors
+          document.getElementById('nameError').innerText = '';
+          document.getElementById('discountError').innerText = '';
+          document.getElementById('expiryDateError').innerText = '';
+          document.getElementById('minPurchaseError').innerText = '';
+
+          // Validate coupon name
+          const couponName = document.getElementById('couponcode').value;
+          if (couponName === '') {
+              document.getElementById('nameError').innerText = 'Coupon name is required';
+              isValid = false;
+          }
+
+          // Validate discount percentage
+          const discountPercentage = document.getElementById('discountPercentage').value;
+          if (discountPercentage <= 0 || discountPercentage > 100) {
+              document.getElementById('discountError').innerText = 'Discount percentage must be between 1 and 100';
+              isValid = false;
+          }
+
+          // Validate expire date
+          const expireDate = document.getElementById('expireDate').value;
+          const currentDate = new Date().toISOString().split('T')[0];
+          if (expireDate === '') {
+              document.getElementById('expiryDateError').innerText = 'Expire date is required';
+              isValid = false;
+          } else if (expireDate < currentDate) {
+              document.getElementById('expiryDateError').innerText = 'Expire date cannot be in the past';
+              isValid = false;
+          }
+
+          // Validate minimum purchase amount
+          const minPurchaseAmount = document.getElementById('minPurchaseAmount').value;
+          if (minPurchaseAmount <= 0) {
+              document.getElementById('minPurchaseError').innerText = 'Minimum purchase amount must be greater than 0';
+              isValid = false;
+          }
+
+          return isValid;
+      }
+  </script>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         new DataTable('#userTable');

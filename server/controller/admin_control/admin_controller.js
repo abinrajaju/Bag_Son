@@ -79,8 +79,7 @@ const admindash = async (req, res) => {
                     // const discountedPrice = productPrice * ( (item.productId.discount / 100));
                     const discountedPrice =  item.productId.discount;
                     // const discountAmount = productPrice - discountedPrice;
-                    console.log(productPrice,'pppppppppp')
-                    console.log(discountedPrice,'OOOOOOO');
+                   
                     totalDiscount += discountedPrice;
                 }
             });
