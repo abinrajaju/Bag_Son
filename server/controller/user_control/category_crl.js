@@ -104,7 +104,7 @@ const allproduct=async(req,res)=>{
         
         
         let cartCount = 0;
-        const products = await productdb.find({list:'listed'}).populate("Category").limit(8).sort({_id : -1 });
+        const products = await productdb.find({list:'listed'}).populate("Category").limit(8);
         const category=await categorydb.find(); 
         let pages = await productdb.countDocuments();
     pages = Math.ceil(pages/8)
@@ -138,7 +138,7 @@ const shopeCata=async(req,res)=>{
      const category = await categorydb.findById(categoryId)
      let pages = await productdb.countDocuments({ Category: category.id});
      pages = Math.ceil(pages/8)
-     const products = await productdb.find({ Category: category,list:'listed' }).populate('Category').limit(8).sort({_id : -1 });
+     const products = await productdb.find({ Category: category,list:'listed' }).populate('Category').limit(8);
      for (const product of products) {
         await applyoffer(product);
     }
@@ -258,7 +258,7 @@ const nocata= async(req,res)=>{
     try{
         const category=req.body.items
         
-        const products = await productdb.find({list:'listed'}).populate("Category").limit(8).sort({_id : -1 });
+        const products = await productdb.find({list:'listed'}).populate("Category").limit(8);
         let pages = await productdb.countDocuments();
         pages = Math.ceil(pages/8)
         for (const product of products) {

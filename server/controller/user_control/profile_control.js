@@ -324,15 +324,8 @@ const getwallet=async(req,res)=>{
         
         const user= await userdb.findOne({email:req.session.email})
         let wallet= await walletdb.findOne({user:user});
-        wallet.transactions.reverse()
-        let pages =wallet.transactions.length 
-        wallet.transactions = wallet.transactions.slice(-8);
-        
-        
-        
-
-
-         pages = Math.ceil(pages/8)
+       
+       
         if (!wallet) {
             wallet = new walletdb({
                 user: user._id,
@@ -340,6 +333,11 @@ const getwallet=async(req,res)=>{
             });
             await wallet.save();
         }
+        wallet.transactions.reverse()
+        let pages =wallet.transactions.length 
+        wallet.transactions = wallet.transactions.slice(-8);
+   
+         pages = Math.ceil(pages/8)
 
       
         
