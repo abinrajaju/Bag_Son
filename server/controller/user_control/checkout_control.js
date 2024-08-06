@@ -6,6 +6,7 @@ const orderdb=require('../../model/odermodel')
 const coupondb=require('../../model/copunmodel')
 const Razorpay=require('razorpay')
 const walletdb=require('../../model/walletmodel')
+const offerdb=require('../../model/offermodel')
 const dotenv = require('dotenv')
 dotenv.config({ path: 'config.env' })
 
@@ -23,10 +24,12 @@ const get_checkout= async(req,res)=>{
     
     const user=await userdb.findOne({email:req.session.email})
     const products=await cartdb.findOne({user:user._id}).populate('items.productId')
+   console.log(products,'oooooooooooooo');
+   
     const applicableCoupons= await coupondb.find()
     const address=await addressdb.find({user:user._id})
     const wallet=await walletdb.findOne({user:user._id})|| { balance: 0, transactions: [] };
-    console.log(wallet);
+    
    
     res.render('user/checkout',{address,products,applicableCoupons,wallet})
 }
@@ -37,7 +40,7 @@ const cod=async(req,res)=>{
        
         const { data, paymentMethod,totalamount} = req.body;
         const { items, addressId } = data;
-        console.log(totalamount);
+        
         
           
         const address = await addressdb.findById(addressId);
@@ -71,6 +74,7 @@ const cod=async(req,res)=>{
                
                 return res.status(400).json({ message: `Product with ID ${productId} is out of stock` });
             }
+            const prod=  await applyoffer(product)
 
             product.stock -= item.quantity;
             product.count += 1;
@@ -79,7 +83,7 @@ const cod=async(req,res)=>{
 
             updatedProducts.push({
                 productId: productId,
-                price: product.price,
+                price: Math.min(prod.offerPrice || Infinity, prod.price - prod.discount),
                 quantity: item.quantity,
             });
         }
@@ -223,9 +227,11 @@ const onlinepayed=async(req,res)=>{
                 continue;
             }
 
+
             if (product.stock < item.quantity) {
                 return res.status(400).json({ message: `Product with ID ${productId} is out of stock` });
             }
+            const prod=  await applyoffer(product)
 
             product.stock -= item.quantity;
             product.count += 1;
@@ -234,7 +240,7 @@ const onlinepayed=async(req,res)=>{
 
             updatedProducts.push({
                 productId: productId,
-                price: product.price,
+                price: Math.min(prod.offerPrice || Infinity, prod.price - prod.discount),
                 quantity: item.quantity,
             });
         }
@@ -301,6 +307,7 @@ const walletpay=async(req,res)=>{
                
                 return res.status(400).json({ message: `Product with ID ${productId} is out of stock` });
             }
+            const prod=  await applyoffer(product)
 
             product.stock -= item.quantity;
             product.count += 1;
@@ -308,7 +315,7 @@ const walletpay=async(req,res)=>{
             
             updatedProducts.push({
                 productId: productId,
-                price: product.price,
+                price:Math.min(prod.offerPrice || Infinity, prod.price - prod.discount),
                 quantity: item.quantity,
             });
 
@@ -382,7 +389,7 @@ const discount = parseInt((totalAmount) * (coupon.discountPercentage)) / 100
 
 const failpayment=async(req,res)=>{
     try {
-        const { data } = req.body;
+        const { data,totalamount } = req.body;
         const parsedData = data; // Directly use data if already an object
         const { items, addressId, paymentMethod } = parsedData;
 
@@ -393,7 +400,7 @@ const failpayment=async(req,res)=>{
         }
         const userId = user.id;
 
-        console.log(items, addressId, 'adddd');
+
 
         const address = await addressdb.findById(addressId);
         if (!address) {
@@ -403,37 +410,40 @@ const failpayment=async(req,res)=>{
         const updatedProducts = [];
         for (const item of items) {
             const productId = item.productId;
-            console.log('productId', productId);
+            
 
             const product = await productdb.findById(productId);
             if (!product) {
                 console.log(`Product with ID ${productId} not found`);
                 continue;
             }
+          const prod=  await applyoffer(product)
+           
+            
+
 
             if (product.stock < item.quantity) {
                 return res.status(400).json({ message: `Product with ID ${productId} is out of stock` });
             }
-
-            product.stock -= item.quantity;
-            product.count += 1;
+            
+            
             await product.save();
 
             updatedProducts.push({
                 productId: productId,
-                price: product.price,
+                price:Math.min(prod.offerPrice || Infinity, prod.price - prod.discount),
                 quantity: item.quantity,
             });
         }
 
-        const totalAmount = updatedProducts.reduce((total, item) => total + item.price * item.quantity, 0);
+        // const totalAmount = updatedProducts.reduce((total, item) => total + item.price * item.quantity, 0);
 
         const order = new orderdb({
             userId: userId,
             items: updatedProducts,
-            totalAmount: totalAmount,
+            totalAmount: totalamount,
             address: address,
-            paymentMethod: paymentMethod,
+            paymentMethod: "Not Paid",
             paymentStatus: "Pending",
             status: 'Pending'
         });
@@ -460,6 +470,7 @@ const retrypayment=async(req,res)=>{
         if (!order) {
             return res.status(404).json({ success: false, message: 'Order not found' });
         }
+        
 
         // Create a new Razorpay order
         const razorpayOrder = await razorpay.orders.create({
@@ -481,6 +492,15 @@ const paymentSucces = async (req, res) => {
         const orderId = req.query.orderId;
         
         const order = await orderdb.findById(orderId);
+        console.log(order,'pppppppppp');
+        
+        const items=order.items
+        for (const item of items) {
+          const product = await productdb.findById(item.productId);
+        product.stock -= item.quantity;
+            product.count += 1;
+            product.save()
+        }
         order.status = 'Pending';
         order.paymentStatus = 'Completed';
         order.paymentMethod='online'
@@ -494,6 +514,41 @@ const paymentSucces = async (req, res) => {
 
     }
 }
+
+const applyoffer = async (product) => {
+    if (!product) {
+        return null;
+    }
+
+    try {
+        const productOffer = await offerdb.findOne({
+            product_name: product._id,
+            status: 'active'
+        });
+       
+
+        const categoryOffer = await offerdb.findOne({
+            category_name: product.Category._id, // Ensure this matches the field used in product's schema
+            status: 'active'
+        });
+
+        if (productOffer && typeof productOffer.discount_Percentage === 'number') {
+            product.offerPrice = Math.round(product.price - (product.price * (productOffer.discount_Percentage / 100)));
+            console.log("Applied product offer");
+        } else if (categoryOffer && typeof categoryOffer.discount_Percentage === 'number') {
+            product.offerPrice = Math.round(product.price - (product.price * (categoryOffer.discount_Percentage / 100)));
+            console.log("Applied category offer");
+        } else {
+            product.offerPrice = product.price;
+            console.log("No offers applied");
+        }
+    } catch (error) {
+        console.error('Error applying offer:', error);
+    }
+
+    return product;
+    
+};
 
 
 

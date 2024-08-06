@@ -148,7 +148,7 @@
                                                             class="card-radio-input">
                                                         <span class="card-radio py-3 text-center text-truncate">
                                                             <i class="bx bx-credit-card d-block h2 mb-3"></i>
-                                                            wallet:<%=wallet.balance%>
+                                                            wallet:  <span id="balance"><%=wallet.balance%></span>
                                                         </span>
                                                     </label>
                                                 </div>
@@ -515,7 +515,7 @@
 											headers: {
 												'Content-Type': 'application/json',
 											},
-											body: JSON.stringify({ data }),
+											body: JSON.stringify({ data,totalamount }),
 										}).then(() => {
 											window.location.href = '/userorders'; // Redirect to the orders page
 										}).catch(error => {
@@ -528,7 +528,11 @@
                             else if(paymentMethod === 'wallet' && items.length != 0) {
                                 var totalElement = document.getElementById('totalAmountid');
                                 const totalamount = totalElement.textContent.trim();
-                               
+                                var balanceElement = document.getElementById("balance");
+
+
+                                 var walletBalance = balanceElement.innerText || balanceElement.textContent;
+                                       if(totalamount<=walletBalance){
                                 fetch('/walletpay',{
                                     method: 'post',
 								headers: {
@@ -550,6 +554,11 @@
 								
 
                                 })
+                            }
+                            else{
+                                console.log('hii   ');
+                                
+                            }
                             }
 
 

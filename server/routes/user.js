@@ -61,6 +61,7 @@ route.get('/orders/invoice/:orderId',check.active,invoice.generateOrderInvoice)
 route.post('/update-user/:id',check.active,profile.editProfile)
 route.get('/update-address',check.active,profile.geteditAdress)
 route.post('/editaddress/:id',check.active,profile.editAddress)
+route.post('/walletpage',check.active,profile.walletpagination)
 
 
 //cart

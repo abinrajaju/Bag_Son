@@ -345,10 +345,12 @@ const pagination=async(req,res)=>{
  
  
  const{page,cata,sort}=req.query
+ console.log(page, cata, sort + "  this is my console")
 
  let jump = (page-1) * 8;
  
  let next= await productdb.find()
+
  for (const sortedProduct of next) {
      await applyoffer(sortedProduct);
  }
@@ -394,5 +396,5 @@ const pagination=async(req,res)=>{
 
 
 module.exports={
-    men,kid,women,allproduct,shopeCata,sort_product,Catasort,nocata,search,pagination,allpage
+    men : men,kid,women,allproduct,shopeCata,sort_product,Catasort,nocata,search,pagination,allpage
 }

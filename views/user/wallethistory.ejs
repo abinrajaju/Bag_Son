@@ -50,7 +50,7 @@
       <!-- wallet history  -->
       <table class="table overflow-x-scroll">
         <thead>
-            <tr>
+            <tr >
                 <th>Date</th>
                 <th>Transaction Type</th>
                 <th>Amount</th>
@@ -58,10 +58,10 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="productGrid">
             <% walletHistory.transactions.forEach(wallet => { %>
-                <tr>
-                    <td><%= wallet.timestamp.toDateString() %></td>
+                <tr >
+                    <td ><%= wallet.timestamp.toDateString() %></td>
                     <td><%= wallet.type %></td>
                     <td>
                         <% if (wallet.type === 'refund') { %>
@@ -76,7 +76,18 @@
             <% }); %>
         </tbody>
     </table>
-  </div>
+    <!-- pagination -->
+    <div class="pagination-container">
+        <div class="pagination" id="innerpage">
+          <% for (let i=1; i <=pages; i++) { %>
+            <button class="page-btn" data-page="<%= i %>">
+              <%= i %>
+            </button>
+            <% } %>
+        </div>
+      </div>
+  
+   </div>
 </div>
 </div>
 </div>
@@ -107,3 +118,153 @@
         }
     });
 </script>
+<!-- <script>
+    // Fetch function to send data to the backend
+    function fetchData() {
+      const checkboxes = document.querySelectorAll('.form-check-input');
+      const sortSelect = document.getElementById('sortSelect');
+      const currentPage = document.querySelector('.page-number.active').textContent.trim();
+
+    //   const filters = Array.from(checkboxes)
+    //     .filter(checkbox => checkbox.checked)
+    //     .map(checkbox => checkbox.value);
+
+     
+      console.log("Triggered!")
+
+      fetch('/walletpage', {
+		 method: "POST",
+		headers: {
+		 'Content-Type': 'application/json'
+		 },	body: JSON.stringify({ quantity:quantityValue })
+			              })
+        .then(response => response.json())
+        .then(data => {
+          // Update product grid with fetched data
+          const productGrid = document.getElementById('productGrid');
+          productGrid.innerHTML = ''; // Clear existing content
+
+        
+            data.products.forEach(product => {
+              productGrid.innerHTML += `
+              <div id="product-${product._id}" class="single-product col-md-4 col-sm-6 col-12 mb-4">
+                <div class="part-1">
+                  <img src="${product.images[0]}" alt="Product Image" style="height: 100%; width: 100%; background-repeat: no-repeat; background-size: cover; background-position: center;">
+                  <ul>
+                    ${product.stock > 0 ? `<li><a href="/user/addtocart/${product._id}"><i class="fa fa-shopping-cart"></i></a></li>` : ''}
+                    <li><a href="/user/addwishlist/${product._id}"><i class="fa fa-heart"></i></a></li>
+                    <li><a href="/user/productview?id=${product._id}"><i class="fa fa-expand"></i></a></li>
+                  </ul>
+                </div>
+                <div class="part-2">
+                  <h3 class="product-title">${product.p_name}</h3>
+                  ${product.stock <= 0 ? `<p class="text-danger">Out of Stock</p>` : `<h4 class="product-old-price">$${product.price}</h4><h4 class="product-price text-lg">$${product.total_price - product.offerDiscount}</h4>`}
+                </div>
+              </div>
+            </div>`;
+            });
+          }
+        )
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    }
+
+    // Attach event listeners to pagination buttons
+    const paginationButtons = document.querySelectorAll('.page-number');
+    paginationButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all buttons
+        paginationButtons.forEach(btn => btn.classList.remove('active'));
+        // Add active class to the clicked button
+        button.classList.add('active');
+        // Fetch data when a pagination button is clicked
+        fetchData();
+      });
+    });
+
+    // Attach event listener to checkboxes and sort select
+    const formElements = document.querySelectorAll('.form-check-input, #sortSelect');
+    formElements.forEach(element => {
+      element.addEventListener('change', () => {
+        // Fetch data when a checkbox or sort select is changed
+        fetchData();
+      });
+    });
+
+    // Initial fetch when the page loads
+    fetchData();
+  </script> -->
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+  const buttons = document.querySelectorAll('.page-btn');
+
+  buttons.forEach(button => {
+    button.addEventListener('click', function() {
+      const pageValue = button.getAttribute('data-page');
+      console.log('Page value:', pageValue);
+
+      fetch('/walletpage', {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ pageValue })
+      })
+      .then(response => response.json())
+      .then(res => {
+        console.log('Response data:', res);
+
+        if (!res.transactions || !Array.isArray(res.transactions)) {
+          console.error('Unexpected response format:', res);
+          return;
+        }
+        
+        const productGrid = document.getElementById('productGrid');
+        if (!productGrid) {
+          console.error('Element with ID "productGrid" not found');
+          return;
+        }
+
+        productGrid.innerHTML = '';
+        
+        res.transactions.forEach(wallet => {
+          const row = document.createElement('tr');
+          
+          const timestampCell = document.createElement('td');
+          timestampCell.textContent = new Date(wallet.timestamp).toDateString();
+          row.appendChild(timestampCell);
+          
+          const typeCell = document.createElement('td');
+          typeCell.textContent = wallet.type;
+          row.appendChild(typeCell);
+          
+          const amountCell = document.createElement('td');
+          if (wallet.type === 'refund') {
+            amountCell.innerHTML = `<span class="text-success">+ ${wallet.amount}</span>`;
+          } else if (wallet.type === 'withdrawl') {
+            amountCell.innerHTML = `<span class="text-danger">- ${wallet.amount}</span>`;
+          }
+          row.appendChild(amountCell);
+          
+          const orderCell = document.createElement('td');
+          orderCell.textContent = wallet.order;
+          row.appendChild(orderCell);
+          
+          const stateCell = document.createElement('td');
+          stateCell.textContent = wallet.state;
+          row.appendChild(stateCell);
+          
+          productGrid.appendChild(row);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+    });
+  });
+});
+
+
+  </script>

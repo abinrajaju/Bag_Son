@@ -42,7 +42,7 @@ app.use(passport.session())
 //auth google
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
 
-//callback for googlr authentication
+//callback for google authentication
 app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/usersignup' }), async (req, res) => {
         const userToken = req.user.userToken;

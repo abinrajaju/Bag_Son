@@ -221,7 +221,7 @@
           <a href="/" class="nav-link">Home</a>
         </li>
 
-        
+
         <li class="nav-item">
           <a href="#about" class="nav-link">About</a>
         </li>
@@ -245,11 +245,15 @@
         <div class="icon">
           <a href="/wishlisted">
             <i class="bx bx-heart"></i></a>
-            <span class="d-flex"><%=wishCount %></span>
+          <span class="d-flex">
+            <%=wishCount %>
+          </span>
         </div>
         <a href="/cart" class="icon">
           <i class="bx bx-cart"></i>
-          <span class="d-flex"><%=cartCount%></span>
+          <span class="d-flex">
+            <%=cartCount%>
+          </span>
         </a>
       </div>
 
@@ -327,10 +331,10 @@
             <% if (wishlist && wishlist.items.some(items=>items.productId.toString()===product._id.toString())) { %>
               <li style="background-color: brown;"><a href="/wishlisted"><i class="bx bx-heart"></i></a></li>
               <% } else { %>
-                <li  ><a href="wishlist/<%=product._id %>"><i class="bx bx-heart" ></i></a></li>
+                <li><a href="wishlist/<%=product._id %>"><i class="bx bx-heart"></i></a></li>
                 <% } %>
-            <li><a href="/productdetail?id=<%=product._id  %>"><i class="bx bx-search"></i></a></li>
-            <li><a href="cart/<%=product._id %>"><i class="bx bx-cart"></i></a></li>
+                  <li><a href="/productdetail?id=<%=product._id  %>"><i class="bx bx-search"></i></a></li>
+                  <li><a href="cart/<%=product._id %>"><i class="bx bx-cart"></i></a></li>
           </ul>
         </div>
         <% }) %>
@@ -394,7 +398,7 @@
             .then(res => {
 
               const productGrid = document.getElementById('innerPeace');
-
+              let paginationHTML= document.getElementById('innerpage');
               productGrid.innerHTML = '';
 
               res.products.forEach(product => {
@@ -430,12 +434,12 @@
 
 
               })
-              let paginationHTML = '';
-        for (let i = 1; i <= res.pages; i++) {
-            paginationHTML += `<button class="page-btn" data-page="${i}">${i}</button>`;
-        }
+              paginationHTML = '';
+              for (let i = 1; i <= res.pages; i++) {
+                paginationHTML += `<button class="page-btn" data-page="${i}">${i}</button>`;
+              }
 
-            document.getElementById('innerpage').innerHTML = paginationHTML;
+              document.getElementById('innerpage').innerHTML = paginationHTML;
             })
 
         } else {
@@ -493,6 +497,7 @@
               }
 
               document.getElementById('innerpage').innerHTML = paginationHTML;
+
             })
         }
       })
@@ -500,6 +505,15 @@
       .catch(error => {
         console.error('Error:', error);
       });
+
+      // function addBtnEvent(){
+      //   const buttons = document.getElementById('innerpage');
+      //   buttons.forEach(button=>{
+      //     button.addEventListener('click',()=>{
+
+      //     })
+      //   })
+      // }
   </script>
 
 
@@ -675,7 +689,7 @@
 
     // pagination
     document.addEventListener("DOMContentLoaded", function () {
-      const pageButtons =  document.querySelectorAll('.page-btn');
+      const pageButtons = document.querySelectorAll('.page-btn');
       const selectedItemId = document.getElementById('shop').value;
       const sort = document.getElementById('sort').value
 
@@ -684,7 +698,7 @@
           const page = this.getAttribute('data-page');
           console.log('Page clicked:', page);
           if (selectedItemId == 'all') {
-              
+
             const url = `/allviewmoreorder?page=${page}&&cata=${selectedItemId}&&sort=${sort}`;
 
             fetch(url)

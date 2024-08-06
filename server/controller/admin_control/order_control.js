@@ -44,7 +44,8 @@ const orderDetail = async (req, res) => {
         const orderId = req.params.id
         const order = await orderdb.findById(orderId).populate('items.productId')
         
-       
+        console.log(order,'lllllll');
+        
         res.render('admin/order_view', { order })
 
     } catch (error) {

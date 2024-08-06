@@ -283,7 +283,7 @@ const cancelOrder=async(req,res)=>{
             $inc: { stock: item.quantity },
           });}
           
-            if(order.paymentMethod!='cod'){
+            if(order.paymentStatus!='Pending'){
           
           if (!wallet) {
             const wallett = new walletdb({
@@ -324,6 +324,15 @@ const getwallet=async(req,res)=>{
         
         const user= await userdb.findOne({email:req.session.email})
         let wallet= await walletdb.findOne({user:user});
+        wallet.transactions.reverse()
+        let pages =wallet.transactions.length 
+        wallet.transactions = wallet.transactions.slice(-8);
+        
+        
+        
+
+
+         pages = Math.ceil(pages/8)
         if (!wallet) {
             wallet = new walletdb({
                 user: user._id,
@@ -332,9 +341,9 @@ const getwallet=async(req,res)=>{
             await wallet.save();
         }
 
-        wallet= await walletdb.findOne({user:user});
-        wallet.transactions.reverse()
-        res.render('user/wallethistory',{walletHistory:wallet,user})
+      
+        
+        res.render('user/wallethistory',{walletHistory:wallet,user,pages})
 
     }catch(err){
         console.log(err);
@@ -376,6 +385,28 @@ const retur= async(req,res)=>{
     }
    
  }
+ 
+
+ const walletpagination=async(req,res)=>{
+    
+ 
+ 
+    const page= parseInt(req.body.pageValue)
+    
+   
+    let jump = page*8;
+    const start = (page - 1) *8;
+
+    
+    
+    const user= await userdb.findOne({email:req.session.email})
+        let wallet= await walletdb.findOne({user:user});
+        wallet.transactions.reverse()
+        wallet.transactions = wallet.transactions.slice(start,jump);
+   
+        
+       return res.status(200).json( wallet);
+    }   
 
 
 
@@ -383,7 +414,7 @@ const retur= async(req,res)=>{
 
 module.exports={
     profile,address,userorders,wishlisted,add_wishlist,remove_wishlist,get_address,add_address,delete_address,cancelOrder,
-    getwallet,orderDetail,retur,editProfile,geteditAdress,editAddress
+    getwallet,orderDetail,retur,editProfile,geteditAdress,editAddress,walletpagination
 
 
 }
